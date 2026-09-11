@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glaucoma Risk Calculator</title>
+<style>
+:root{
+  --bg:#07111f;
+  --panel:#0d1a2b;
+  --panel2:#102139;
+  --line:rgba(177,199,229,.14);
+  --text:#f5f8fc;
+  --muted:#8fa3bd;
+  --muted2:#657a96;
+  --mint:#74ead1;
+  --blue:#7fa8ff;
+  --violet:#b998ff;
+  --danger:#ff9c9c;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 10% 5%,rgba(127,168,255,.16),transparent 28%),
+    radial-gradient(circle at 92% 14%,rgba(116,234,209,.10),transparent 24%),
+    linear-gradient(180deg,#07111f,#081422 75%,#07101c);
+}
+body:before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;opacity:.20;
+  background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:44px 44px;
+}
+.app{
+  position:relative;
+  width:min(1500px,calc(100% - 34px));
+  height:100vh;
+  margin:auto;
+  padding:18px 0 14px;
+  display:grid;
+  grid-template-rows:62px minmax(0,1fr) 25px;
+  gap:10px;
+}
+header{
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+}
+.brand{display:flex;align-items:center;gap:13px}
+.logo{
+  width:42px;height:42px;border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:linear-gradient(135deg,rgba(116,234,209,.17),rgba(127,168,255,.16));
+  display:grid;place-items:center;
+  box-shadow:0 12px 34px rgba(0,0,0,.22);
+}
+.logo svg{width:24px;height:24px}
+.brand h1{margin:0;font-size:30px;line-height:1;font-family:"Bodoni 72 Smallcaps","Bodoni 72","Didot","Georgia","Times New Roman",serif;font-weight:900;font-style:italic;letter-spacing:-.035em;text-shadow:0 2px 18px rgba(127,168,255,.10)}
+.brand p{margin:5px 0 0;color:var(--muted);font-size:10px;letter-spacing:.025em}
+.badge{
+  border:1px solid var(--line);border-radius:999px;
+  padding:8px 12px;background:rgba(255,255,255,.035);
+  color:#bdcbe0;font-size:10px;font-weight:700;letter-spacing:.08em;
+}
+.workspace{
+  min-height:0;
+  display:grid;
+  grid-template-columns:minmax(330px,.72fr) minmax(600px,1.48fr);
+  gap:14px;
+}
+.panel{
+  min-height:0;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(180deg,rgba(16,33,54,.91),rgba(10,22,38,.91));
+  box-shadow:0 26px 70px rgba(0,0,0,.28);
+  backdrop-filter:blur(18px);
+  overflow:hidden;
+}
+.left{
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr) auto;
+}
+.panel-title{
+  padding:18px 20px 14px;
+  border-bottom:1px solid var(--line);
+}
+.step{
+  color:var(--mint);font-size:9px;font-weight:800;
+  text-transform:uppercase;letter-spacing:.16em;margin-bottom:5px;
+}
+.panel-title h2{margin:0;font-size:18px;letter-spacing:-.02em}
+.inputs{
+  min-height:0;
+  padding:13px 14px 10px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-auto-rows:1fr;
+  gap:9px;
+}
+.field{
+  min-height:0;
+  border:1px solid rgba(127,168,255,.26);
+  border-radius:14px;
+  background:linear-gradient(145deg,rgba(127,168,255,.075),rgba(255,255,255,.025));
+  padding:9px 11px 8px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  transition:.18s ease;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
+.field:focus-within{
+  border-color:rgba(116,234,209,.72);
+  box-shadow:0 0 0 3px rgba(116,234,209,.075),0 10px 28px rgba(47,117,135,.08);
+  background:linear-gradient(145deg,rgba(116,234,209,.085),rgba(127,168,255,.04));
+}
+.label-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:5px}
+.label-row label{font-size:12px;font-weight:750}
+.unit{font-size:9px;color:var(--muted2);white-space:nowrap}
+input{
+  width:100%;min-width:0;border:1px solid rgba(177,199,229,.13);outline:0;
+  background:rgba(3,11,20,.30);color:#fff;border-radius:9px;
+  font:720 20px/1.1 Inter,ui-sans-serif,system-ui;
+  letter-spacing:-.025em;font-variant-numeric:tabular-nums;padding:7px 9px;
+  transition:.18s ease;
+}
+input:focus{
+  border-color:rgba(116,234,209,.38);
+  background:rgba(3,11,20,.42);
+  box-shadow:inset 0 0 0 1px rgba(116,234,209,.05);
+}
+input::placeholder{color:#526782;font-weight:500}
+input::-webkit-inner-spin-button,input::-webkit-outer-spin-button{appearance:none;margin:0}
+.range{
+  margin-top:5px;color:#7890ad;font-size:8.5px;letter-spacing:.015em;
+  display:flex;align-items:center;justify-content:space-between;gap:8px
+}
+.range strong{color:#a7b8cd;font-weight:700}
+.cti-formula{
+  margin-top:4px;
+  color:#8196b0;
+  font-size:8px;
+  line-height:1.28;
+  white-space:normal;
+  overflow:visible;
+  overflow-wrap:anywhere;
+  letter-spacing:.005em
+}
+.input-actions{padding:0 14px 14px}
+.error{height:16px;color:var(--danger);font-size:9px;margin:0 2px 4px;opacity:0;transition:.2s}
+.error.show{opacity:1}
+.submit{
+  width:100%;border:0;border-radius:13px;cursor:pointer;
+  padding:12px 16px;
+  color:#06131a;font-weight:820;letter-spacing:.08em;font-size:11px;
+  background:linear-gradient(90deg,var(--mint),#8ed9ff);
+  box-shadow:0 12px 30px rgba(78,185,183,.17);
+  transition:.18s ease;
+}
+.submit:hover{transform:translateY(-1px);filter:brightness(1.03)}
+.submit:active{transform:translateY(0)}
+.submit.calculating{
+  color:#eafffa;
+  background:linear-gradient(90deg,rgba(116,234,209,.22),rgba(127,168,255,.26));
+  border:1px solid rgba(116,234,209,.35);
+  box-shadow:0 0 0 4px rgba(116,234,209,.05),0 12px 32px rgba(58,157,164,.14);
+  pointer-events:none;
+}
+.submit.calculating:after{
+  content:"";display:inline-block;width:9px;height:9px;margin-left:9px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.28);border-top-color:#fff;vertical-align:-1px;
+  animation:spin .65s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.right.computing{box-shadow:0 0 0 1px rgba(116,234,209,.22),0 0 42px rgba(116,234,209,.09),0 26px 70px rgba(0,0,0,.28)}
+.metric-card.result-pop{animation:resultPop .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes resultPop{
+  0%{transform:translateY(5px);opacity:.65;box-shadow:0 0 0 rgba(116,234,209,0)}
+  55%{box-shadow:0 0 30px rgba(116,234,209,.10)}
+  100%{transform:translateY(0);opacity:1;box-shadow:none}
+}
+.calc-flow{
+  position:absolute;left:20px;right:20px;top:17px;display:flex;align-items:center;justify-content:flex-end;
+  gap:5px;color:#6f859f;font-size:8px;font-weight:750;letter-spacing:.06em;text-transform:uppercase
+}
+.calc-flow i{width:13px;height:1px;background:rgba(127,168,255,.28);display:block}
+
+.right{
+  display:grid;
+  grid-template-rows:64px minmax(0,1fr);
+}
+.right-head{
+  padding:11px 14px 11px 18px;
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+}
+.right-title .micro{color:var(--muted2);font-size:9px;text-transform:uppercase;letter-spacing:.14em;font-weight:800}
+.right-title strong{display:block;font-size:16px;margin-top:3px;letter-spacing:-.015em}
+.tabs{
+  display:flex;gap:5px;padding:4px;
+  border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.025);
+}
+.tab{
+  border:0;background:transparent;color:var(--muted);cursor:pointer;
+  padding:8px 13px;border-radius:9px;font:700 10px/1 Inter,ui-sans-serif,system-ui;
+  letter-spacing:.04em;transition:.18s ease;
+}
+.tab.active{
+  color:#07131d;background:linear-gradient(90deg,var(--mint),#9ed2ff);
+  box-shadow:0 6px 18px rgba(82,178,183,.16);
+}
+.view{display:none;min-height:0;height:100%}
+.view.active{display:block}
+.results-view{
+  padding:14px;
+  height:100%;
+}
+.result-grid{
+  height:100%;
+  display:grid;
+  grid-template-columns:1.05fr .78fr;
+  grid-template-rows:minmax(180px,.92fr) minmax(190px,1.08fr);
+  gap:11px;
+}
+.metric-card,.detail-card{
+  border:1px solid rgba(177,199,229,.12);
+  border-radius:17px;background:rgba(255,255,255,.022);
+  min-height:0;
+}
+.prob-card{
+  position:relative;overflow:hidden;padding:38px 20px 18px;
+  background:
+    radial-gradient(circle at 84% 20%,rgba(116,234,209,.14),transparent 34%),
+    linear-gradient(150deg,rgba(116,234,209,.06),rgba(127,168,255,.045));
+}
+.prob-card:after{
+  content:"";position:absolute;width:210px;height:210px;border-radius:50%;
+  right:-85px;bottom:-115px;border:1px solid rgba(116,234,209,.15);
+  box-shadow:0 0 0 28px rgba(116,234,209,.018),0 0 0 56px rgba(127,168,255,.014);
+}
+.metric-label{
+  font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800
+}
+.big-value{
+  margin-top:12px;font-size:clamp(48px,5vw,75px);line-height:.92;
+  font-weight:790;letter-spacing:-.06em;font-variant-numeric:tabular-nums
+}
+.prob-track{
+  position:absolute;left:20px;right:20px;bottom:20px;height:7px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden
+}
+.prob-fill{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--mint),var(--blue),var(--violet));transition:width .42s ease}
+.score-card{
+  padding:18px 18px;display:flex;flex-direction:column;justify-content:space-between;
+}
+.score-value{
+  font-size:clamp(36px,4vw,56px);line-height:1;font-weight:760;letter-spacing:-.05em;font-variant-numeric:tabular-nums
+}
+.score-scale{
+  height:6px;border-radius:99px;background:linear-gradient(90deg,rgba(185,152,255,.62),rgba(127,168,255,.66),rgba(116,234,209,.72));
+  position:relative;margin-top:16px;
+}
+.score-marker{
+  position:absolute;top:50%;left:50%;width:13px;height:13px;border-radius:50%;
+  transform:translate(-50%,-50%);background:#fff;border:3px solid #0b1726;box-shadow:0 0 0 2px rgba(116,234,209,.75);
+  transition:left .4s ease;
+}
+.await{
+  color:#627791;font-size:11px;line-height:1.45;margin-top:8px
+}
+.detail-card{
+  grid-column:1/-1;padding:15px 17px;display:grid;grid-template-rows:auto minmax(0,1fr)
+}
+.detail-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:11px}
+.detail-head strong{font-size:12px}
+.detail-head span{font-size:9px;color:var(--muted2)}
+.bars{min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:8px 17px;align-content:center}
+.bar-row{display:grid;grid-template-columns:56px minmax(0,1fr) 55px;gap:8px;align-items:center}
+.bar-name{font-size:10px;font-weight:700;color:#cad6e7}
+.bar-track{position:relative;height:10px;border-radius:99px;background:rgba(255,255,255,.045);overflow:hidden}
+.bar-track:after{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,.24)}
+.bar-pos,.bar-neg{position:absolute;top:2px;height:6px;border-radius:99px;transition:width .35s ease}
+.bar-pos{left:50%;background:linear-gradient(90deg,var(--mint),var(--blue))}
+.bar-neg{right:50%;background:linear-gradient(90deg,var(--violet),var(--blue))}
+.bar-value{font-size:9px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.nomogram-view{height:100%;padding:12px 14px 14px}
+.nomogram-box{
+  height:100%;border:1px solid rgba(177,199,229,.12);border-radius:17px;
+  background:rgba(255,255,255,.018);overflow:hidden;position:relative;
+}
+#nomogramSvg{display:block;width:100%;height:100%}
+.empty{
+  position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--muted2);font-size:11px;
+}
+.empty strong{display:block;color:#b8c7da;font-size:13px;margin-bottom:5px}
+footer{
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  color:#667a94;font-size:9px;letter-spacing:.015em;
+}
+
+.method-btn{
+  cursor:pointer;
+  font-family:inherit;
+  transition:.18s ease;
+}
+.method-btn:hover{
+  border-color:rgba(116,234,209,.38);
+  color:#e8fff9;
+  background:rgba(116,234,209,.065);
+  transform:translateY(-1px);
+}
+.method-overlay{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(2,7,13,.72);
+  backdrop-filter:blur(12px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+.method-overlay.open{display:flex}
+.method-modal{
+  width:min(1040px,94vw);
+  max-height:88vh;
+  overflow:auto;
+  border:1px solid rgba(177,199,229,.18);
+  border-radius:22px;
+  background:
+    radial-gradient(circle at 88% 8%,rgba(116,234,209,.07),transparent 24%),
+    linear-gradient(180deg,#0f1f33,#0a1727);
+  box-shadow:0 36px 100px rgba(0,0,0,.52);
+}
+.method-head{
+  position:sticky;top:0;z-index:2;
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:18px 22px;
+  border-bottom:1px solid rgba(177,199,229,.14);
+  background:rgba(13,27,45,.94);
+  backdrop-filter:blur(14px);
+}
+.method-head .micro{
+  color:var(--mint);font-size:9px;font-weight:800;letter-spacing:.16em;text-transform:uppercase
+}
+.method-head h3{
+  margin:4px 0 0;font-size:20px;letter-spacing:-.02em
+}
+.method-close{
+  width:34px;height:34px;border-radius:10px;border:1px solid rgba(177,199,229,.15);
+  background:rgba(255,255,255,.035);color:#d8e4f3;
+  font-size:20px;line-height:1;cursor:pointer
+}
+.method-close:hover{border-color:rgba(116,234,209,.35);color:#fff}
+.method-body{
+  padding:20px 22px 24px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.method-card{
+  border:1px solid rgba(177,199,229,.12);
+  border-radius:16px;
+  background:rgba(255,255,255,.022);
+  padding:16px;
+}
+.method-card.wide{grid-column:1/-1}
+.method-card h4{
+  margin:0 0 9px;font-size:12px;letter-spacing:.02em;color:#edf4fb
+}
+.method-card p{
+  margin:0;color:#91a5bd;font-size:10.5px;line-height:1.65
+}
+.formula-block,.code-block{
+  margin-top:10px;
+  border:1px solid rgba(177,199,229,.10);
+  border-radius:12px;
+  background:rgba(2,9,17,.46);
+  color:#cad7e8;
+  padding:12px 13px;
+  font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+  font-size:9.5px;
+  line-height:1.62;
+  white-space:pre-wrap;
+  overflow:auto;
+}
+.method-note{
+  color:#7287a1;font-size:9px;line-height:1.55;margin-top:9px
+}
+@media(max-width:760px){
+  .method-body{grid-template-columns:1fr}
+  .method-card.wide{grid-column:auto}
+}
+
+@media(max-width:980px){
+  html,body{overflow:auto;height:auto;min-height:100%}
+  .app{height:auto;min-height:100vh;grid-template-rows:auto auto auto}
+  .workspace{grid-template-columns:1fr}
+  .left{min-height:520px}.right{min-height:650px}
+}
+@media(max-width:620px){
+  .app{width:calc(100% - 20px)}
+  .badge{display:none}
+  .inputs{grid-template-columns:1fr}
+  .result-grid{grid-template-columns:1fr;grid-template-rows:auto}
+  .detail-card{grid-column:auto}.bars{grid-template-columns:1fr}
+  .right-head{align-items:flex-start;flex-direction:column}
+}
+</style>
+
+<style id="figure2-palette">
+:root{
+  --bg:#f4f4f2;
+  --panel:#ffffff;
+  --panel2:#f7f7f5;
+  --line:rgba(60,62,64,.16);
+  --text:#292a2c;
+  --muted:#6b737a;
+  --muted2:#8a9197;
+  --mint:#5f8fa9;
+  --blue:#7fa4b8;
+  --violet:#c77673;
+  --risk:#b33d3c;
+  --risk2:#c77875;
+  --protect:#648faa;
+  --protect2:#92afbf;
+  --paper:#f8f8f6;
+}
+html,body{
+  background:#f3f3f1;
+  color:var(--text);
+}
+body{
+  background:
+    radial-gradient(circle at 9% 4%,rgba(100,143,170,.10),transparent 25%),
+    radial-gradient(circle at 92% 10%,rgba(179,61,60,.075),transparent 22%),
+    linear-gradient(180deg,#f7f7f5,#eeeeec);
+}
+body:before{
+  opacity:.25;
+  background-image:
+    linear-gradient(rgba(45,47,49,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(45,47,49,.025) 1px,transparent 1px);
+}
+.logo{
+  border-color:rgba(62,64,66,.14);
+  background:linear-gradient(135deg,rgba(100,143,170,.15),rgba(199,118,115,.13));
+  box-shadow:0 10px 30px rgba(45,47,49,.08);
+}
+.logo svg path{stroke:#648faa}
+.logo svg circle:nth-of-type(1){stroke:#b84a47}
+.logo svg circle:nth-of-type(2){fill:#303234}
+.brand h1{color:#202224;text-shadow:none}
+.brand p{color:#727a81}
+.badge{
+  color:#9e3433;
+  border-color:rgba(179,61,60,.24);
+  background:rgba(179,61,60,.055);
+}
+.method-btn:hover{
+  border-color:rgba(179,61,60,.48);
+  color:#8f2828;
+  background:rgba(179,61,60,.09);
+}
+.panel{
+  border-color:rgba(65,67,69,.14);
+  background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(248,248,246,.98));
+  box-shadow:0 18px 48px rgba(52,55,58,.10);
+  backdrop-filter:blur(18px);
+}
+.panel-title,.right-head{border-color:rgba(65,67,69,.12)}
+.step{color:#a73736}
+.panel-title h2,.right-title strong{color:#292b2d}
+.right-title .micro{color:#879099}
+.field{
+  border-color:rgba(100,143,170,.24);
+  background:linear-gradient(145deg,rgba(100,143,170,.075),rgba(255,255,255,.82));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+}
+.field:focus-within{
+  border-color:rgba(179,61,60,.48);
+  box-shadow:0 0 0 3px rgba(179,61,60,.055),0 8px 22px rgba(80,83,86,.06);
+  background:linear-gradient(145deg,rgba(199,118,115,.07),rgba(255,255,255,.94));
+}
+.label-row label{color:#323436}
+.unit{color:#7d878f}
+input{
+  color:#222426;
+  border-color:rgba(72,75,78,.13);
+  background:rgba(255,255,255,.80);
+}
+input:focus{
+  border-color:rgba(179,61,60,.32);
+  background:#fff;
+  box-shadow:inset 0 0 0 1px rgba(179,61,60,.035);
+}
+input::placeholder{color:#a3a9ae}
+.range{color:#8a9299}
+.range strong{color:#5d666d}
+.cti-formula{color:#7b858d}
+.submit{
+  color:#fff;
+  background:linear-gradient(90deg,#658fa8,#a8a7a4 47%,#bd5d59 100%);
+  box-shadow:0 10px 24px rgba(97,104,110,.14);
+}
+.submit:hover{filter:saturate(1.06) brightness(1.02)}
+.submit.calculating{
+  color:#fff;
+  background:linear-gradient(90deg,#648faa,#bd5d59);
+  border-color:transparent;
+  box-shadow:0 0 0 4px rgba(179,61,60,.05),0 10px 28px rgba(97,104,110,.16);
+}
+.right.computing{
+  box-shadow:0 0 0 2px rgba(179,61,60,.12),0 18px 48px rgba(52,55,58,.12);
+}
+.tabs{
+  border-color:rgba(65,67,69,.13);
+  background:rgba(45,47,49,.035);
+}
+.tab{color:#747c83}
+.tab.active{
+  color:#fff;
+  background:linear-gradient(90deg,#6d96ad,#b15a57);
+  box-shadow:0 5px 16px rgba(75,80,84,.12);
+}
+.metric-card,.detail-card{
+  border-color:rgba(65,67,69,.12);
+  background:#fbfbfa;
+}
+.prob-card{
+  background:
+    radial-gradient(circle at 84% 20%,rgba(179,61,60,.10),transparent 34%),
+    linear-gradient(145deg,rgba(199,118,115,.065),rgba(100,143,170,.045),#fff);
+}
+.metric-label{color:#747d84}
+.big-value{color:#a93837}
+.prob-track{background:rgba(73,77,81,.08)}
+.prob-fill{
+  background:linear-gradient(90deg,#648faa 0%,#c9cbca 48%,#b33d3c 100%);
+}
+.score-value{color:#35383a}
+.score-scale{
+  background:linear-gradient(90deg,#648faa 0%,#dedfdd 48%,#b33d3c 100%);
+}
+.score-marker{
+  background:#fff;border-color:#45484a;
+  box-shadow:0 0 0 2px rgba(179,61,60,.55);
+}
+.await{color:#8b939a}
+.detail-head strong{color:#343638}
+.bar-name{color:#4c5257}
+.bar-track{background:rgba(70,74,78,.065)}
+.bar-track:after{background:rgba(60,62,64,.22)}
+.bar-pos{background:linear-gradient(90deg,#ca7c79,#aa3736)}
+.bar-neg{background:linear-gradient(90deg,#628eaa,#8dabbc)}
+.bar-value{color:#747d84}
+.nomogram-box{
+  border-color:rgba(65,67,69,.13);
+  background:#fbfbfa;
+}
+.empty{color:#8a9298}
+.empty strong{color:#52585d}
+footer{color:#777f86}
+.warning{color:#6e767c}
+.method-overlay{
+  background:rgba(43,45,47,.34);
+}
+.method-modal{
+  border-color:rgba(62,64,66,.16);
+  background:
+    radial-gradient(circle at 88% 8%,rgba(179,61,60,.055),transparent 24%),
+    linear-gradient(180deg,#ffffff,#f5f5f3);
+  box-shadow:0 30px 85px rgba(44,46,48,.22);
+}
+.method-head{
+  border-color:rgba(62,64,66,.12);
+  background:rgba(250,250,248,.96);
+}
+.method-head .micro{color:#a63736}
+.method-head h3,.method-card h4{color:#2c2e30}
+.method-close{
+  border-color:rgba(62,64,66,.14);
+  background:rgba(62,64,66,.04);
+  color:#5e666c;
+}
+.method-close:hover{border-color:rgba(179,61,60,.36);color:#9d3433}
+.method-card{
+  border-color:rgba(62,64,66,.11);
+  background:rgba(255,255,255,.78);
+}
+.method-card p{color:#68727a}
+.formula-block,.code-block{
+  border-color:rgba(62,64,66,.10);
+  background:#f1f2f1;
+  color:#384047;
+}
+.method-note{color:#818a91}
+body.modal-open{overflow:hidden}
+</style>
+
+
+<style>
+.preset-note{
+  margin-top:4px;
+  text-align:center;
+  color:#8a9298;
+  font-size:8px;
+  line-height:1.25;
+}
+</style>
+
+
+<style>
+.cti-star{
+  color:#a63736;
+  font-size:.78em;
+  vertical-align:super;
+  line-height:0;
+  margin-left:2px;
+  font-weight:900;
+}
+.preset-note{
+  margin-top:5px;
+  color:#6f787f;
+  font-size:8.4px;
+  line-height:1.3;
+  text-align:center;
+}
+.preset-note .formula-star{
+  color:#a63736;
+  font-weight:900;
+}
+</style>
+
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M2.4 12s3.4-5.5 9.6-5.5 9.6 5.5 9.6 5.5-3.4 5.5-9.6 5.5S2.4 12 2.4 12Z" stroke="#b33d3c" stroke-width="1.5"/>
+          <circle cx="12" cy="12" r="3.2" stroke="#9bbcff" stroke-width="1.5"/>
+          <circle cx="12" cy="12" r="1.05" fill="#f7fbff"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Glaucoma Risk Calculator</h1>
+        <p>A Six-Variable Prediction Model Developed from Cross-National Cohorts</p>
+      </div>
+    </div>
+    <button class="badge method-btn" id="methodBtn" type="button">RESEARCH MODEL</button>
+  </header>
+
+  <main class="workspace">
+    <section class="panel left">
+      <div class="panel-title">
+        <div class="step">Step 1</div>
+        <h2>Patient Variables</h2>
+      </div>
+
+      <div class="inputs">
+        <div class="field">
+          <div class="label-row"><label for="CTI" title="Conicity Index = WC (m) / [0.109 × √(Weight / Height (m))]">CTI<sup class="cti-star">*</sup></label><span class="unit">Conicity Index</span></div>
+          <input id="CTI" type="number" step="any" min="0.9736118" max="1.704083" placeholder="Enter CTI" autocomplete="off" value="1.39">
+          <div class="range"><span>Model range</span><strong>0.97–1.70</strong></div>
+        </div>
+        <div class="field">
+          <div class="label-row"><label for="Cr">Creatinine</label><span class="unit">mg/dL</span></div>
+          <input id="Cr" type="number" step="any" min="0.4" max="17.8" placeholder="Enter Cr" autocomplete="off" value="1.19">
+          <div class="range"><span>Model range</span><strong>0.40–17.80</strong></div>
+        </div>
+        <div class="field">
+          <div class="label-row"><label for="RBC">RBC</label><span class="unit">×10⁶/µL</span></div>
+          <input id="RBC" type="number" step="any" min="2.56" max="7.02" placeholder="Enter RBC" autocomplete="off" value="5.01">
+          <div class="range"><span>Model range</span><strong>2.56–7.02</strong></div>
+        </div>
+        <div class="field">
+          <div class="label-row"><label for="HbA1c">HbA1c</label><span class="unit">%</span></div>
+          <input id="HbA1c" type="number" step="any" min="2" max="15.2" placeholder="Enter HbA1c" autocomplete="off" value="6.58">
+          <div class="range"><span>Model range</span><strong>2.00–15.20</strong></div>
+        </div>
+        <div class="field">
+          <div class="label-row"><label for="TC_HDL">TC / HDL-C</label><span class="unit">ratio</span></div>
+          <input id="TC_HDL" type="number" step="any" min="1.31383" max="14.85" placeholder="Enter ratio" autocomplete="off" value="4.99">
+          <div class="range"><span>Model range</span><strong>1.31–14.85</strong></div>
+        </div>
+        <div class="field">
+          <div class="label-row"><label for="Age">Age</label><span class="unit">years</span></div>
+          <input id="Age" type="number" step="1" min="40" max="85" placeholder="Enter age" autocomplete="off" value="68">
+          <div class="range"><span>Model range</span><strong>40–85</strong></div>
+        </div>
+      </div>
+
+      <div class="input-actions">
+        <div id="error" class="error">Please complete all six variables within the model ranges.</div>
+        <button class="submit" id="submitBtn" type="button">SUBMIT</button>
+        <div class="preset-note"><span class="formula-star">*</span> CTI = WC (m) / [0.109 × √(Weight / Height (m))]</div>
+      </div>
+    </section>
+
+    <section class="panel right">
+      <div class="right-head">
+        <div class="right-title">
+          <div class="micro">Model Output</div>
+          <strong id="viewTitle">Risk Estimate</strong>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Result views">
+          <button class="tab active" id="tab2" type="button" data-view="step2">STEP 2 · RESULTS</button>
+          <button class="tab" id="tab3" type="button" data-view="step3">STEP 3 · NOMOGRAM</button>
+        </div>
+      </div>
+
+      <div id="step2" class="view active">
+        <div class="results-view">
+          <div class="result-grid">
+            <div class="metric-card prob-card">
+              <div class="calc-flow"><span>Standardize</span><i></i><span>β-weight</span><i></i><span>Logistic</span></div>
+              <div class="metric-label">Predicted Probability</div>
+              <div class="big-value" id="probability">—</div>
+              <div class="await" id="probHint">Complete Step 1 and submit.</div>
+              <div class="prob-track"><div class="prob-fill" id="probFill"></div></div>
+            </div>
+
+            <div class="metric-card score-card">
+              <div>
+                <div class="metric-label">Risk Score</div>
+                <div class="score-value" id="riskScore">—</div>
+                <div class="await">Linear predictor</div>
+              </div>
+              <div class="score-scale"><div class="score-marker" id="scoreMarker" style="opacity:0"></div></div>
+            </div>
+
+            <div class="detail-card">
+              <div class="detail-head">
+                <strong>Variable Contributions</strong>
+                <span>log-odds contribution</span>
+              </div>
+              <div class="bars" id="bars">
+                <div class="await">Results will appear after submission.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="step3" class="view">
+        <div class="nomogram-view">
+          <div class="nomogram-box">
+            <svg id="nomogramSvg" viewBox="0 0 960 610" preserveAspectRatio="xMidYMid meet"></svg>
+            <div id="nomogramEmpty" class="empty"><div><strong>Nomogram not generated</strong>Submit all variables in Step 1.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>Developed by the Department of Ophthalmology, The First Affiliated Hospital of Nanchang University · Yang et al.</footer>
+</div>
+
+<script>
+(() => {
+  const intercept = -2.760629;
+  const variables = [
+    {id:"CTI",label:"CTI",mean:1.330112,sd:0.086820,beta:0.127915,dec:3,min:0.9736118,max:1.704083},
+    {id:"Cr",label:"Cr",mean:0.948199,sd:0.361071,beta:0.140389,dec:2,min:0.4,max:17.8},
+    {id:"RBC",label:"RBC",mean:4.677461,sd:0.497814,beta:-0.131652,dec:2,min:2.56,max:7.02},
+    {id:"HbA1c",label:"HbA1c",mean:5.849120,sd:1.087302,beta:0.176341,dec:1,min:2,max:15.2},
+    {id:"TC_HDL",label:"TC/HDL",mean:4.064712,sd:1.369750,beta:-0.184288,dec:2,min:1.31383,max:14.85},
+    {id:"Age",label:"Age",mean:59.834820,sd:12.615600,beta:0.619633,dec:0,min:40,max:85}
+  ];
+
+  const maxAbsBeta = Math.max(...variables.map(v=>Math.abs(v.beta)));
+  const globalSpan = 6 * maxAbsBeta; // points across z -3 to +3 for strongest variable
+  const totalNominalMax = variables.reduce((s,v)=>s+(6*Math.abs(v.beta)/globalSpan*100),0);
+
+  const $ = id => document.getElementById(id);
+  const clamp = (x,a,b) => Math.min(b,Math.max(a,x));
+  const logistic = x => x>=0 ? 1/(1+Math.exp(-x)) : Math.exp(x)/(1+Math.exp(x));
+  const signed = (x,d=3) => `${x>=0?"+":"−"}${Math.abs(x).toFixed(d)}`;
+
+  let current = null;
+
+  function switchView(name){
+    document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.view===name));
+    document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===name));
+    $("viewTitle").textContent = name==="step2" ? "Risk Estimate" : "Nomogram";
+  }
+
+  document.querySelectorAll(".tab").forEach(btn=>{
+    btn.addEventListener("click",()=>switchView(btn.dataset.view));
+  });
+
+  function readData(){
+    const rows = [];
+    for(const v of variables){
+      const raw = $(v.id).value.trim();
+      const value = v.id==="Age" ? Math.round(Number(raw)) : Number(raw);
+      if(raw==="" || !Number.isFinite(value) || value<v.min || value>v.max) return {error:v};
+      const z = (value-v.mean)/v.sd;
+      const c = v.beta*z;
+      rows.push({...v,value,z,c});
+    }
+    return {rows};
+  }
+
+  function renderBars(rows){
+    const scale = Math.max(.15,...rows.map(r=>Math.abs(r.c)));
+    $("bars").innerHTML = rows.map(r=>{
+      const w = Math.min(48,Math.abs(r.c)/scale*46);
+      return `<div class="bar-row">
+        <div class="bar-name">${r.label}</div>
+        <div class="bar-track">
+          <div class="bar-pos" style="width:${r.c>=0?w:0}%"></div>
+          <div class="bar-neg" style="width:${r.c<0?w:0}%"></div>
+        </div>
+        <div class="bar-value">${signed(r.c,3)}</div>
+      </div>`;
+    }).join("");
+  }
+
+  function text(x,y,str,size=10,fill="#8fa3bd",anchor="start",weight=500){
+    return `<text x="${x}" y="${y}" fill="${fill}" font-size="${size}" text-anchor="${anchor}" font-weight="${weight}" font-family="Inter,ui-sans-serif,system-ui">${str}</text>`;
+  }
+
+  function renderNomogram(rows,eta,p){
+    const x0=196, full=650, top=62, start=127, gap=61;
+    let svg = `
+      <defs>
+        <linearGradient id="grad" x1="0" x2="1">
+          <stop offset="0%" stop-color="#648faa"/>
+          <stop offset="50%" stop-color="#c7c8c6"/>
+          <stop offset="100%" stop-color="#b33d3c"/>
+        </linearGradient>
+        <filter id="glow"><feGaussianBlur stdDeviation="2.7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      ${text(32,31,"POINTS",13,"#59646d","start",820)}
+      <line x1="${x0}" y1="${top}" x2="${x0+full}" y2="${top}" stroke="rgba(67,72,76,.34)" />
+    `;
+
+    for(let i=0;i<=10;i++){
+      const x=x0+full*i/10;
+      svg += `<line x1="${x}" y1="${top-5}" x2="${x}" y2="${top+5}" stroke="rgba(67,72,76,.38)"/>`;
+      svg += text(x,top-13,String(i*10),11.5,"#59646d","middle",650);
+    }
+
+    rows.forEach((r,i)=>{
+      const y=start+i*gap;
+      const axisW=full*Math.abs(r.beta)/maxAbsBeta;
+      const minC=-3*Math.abs(r.beta), maxC=3*Math.abs(r.beta);
+      const riskT=(r.c-minC)/(maxC-minC);
+      const clamped=clamp(riskT,0,1);
+      const mx=x0+axisW*clamped;
+
+      svg += text(32,y-2,r.label,16,"#2f3336","start",800);
+      svg += text(32,y+17,r.value.toFixed(r.dec),12,"#59646d","start",650);
+      svg += `<line x1="${x0}" y1="${y}" x2="${x0+axisW}" y2="${y}" stroke="url(#grad)" stroke-width="3.4" stroke-linecap="round" opacity=".86"/>`;
+
+      for(let k=0;k<=6;k++){
+        const riskZ=-3+k;
+        const rawZ=r.beta>=0?riskZ:-riskZ;
+        const raw=r.mean+rawZ*r.sd;
+        const x=x0+axisW*k/6;
+        svg += `<line x1="${x}" y1="${y-5}" x2="${x}" y2="${y+5}" stroke="rgba(67,72,76,.36)"/>`;
+        if(k%2===0) svg += text(x,y+20,raw.toFixed(r.dec),11.5,"#59646d","middle",650);
+      }
+
+      svg += `<circle cx="${mx}" cy="${y}" r="10.8" fill="#ffffff" stroke="#b33d3c" stroke-width="3.4" filter="url(#glow)"/>`;
+      svg += `<circle cx="${mx}" cy="${y}" r="3.6" fill="#9d3433"/>`;
+      const badgeX = clamp(mx, x0+34, x0+axisW-34);
+      svg += `<rect x="${badgeX-34}" y="${y-38}" width="68" height="23" rx="8" fill="rgba(166,60,60,.94)" stroke="rgba(166,60,60,.30)"/>`;
+      svg += text(badgeX,y-21,r.value.toFixed(r.dec),11,"#ffffff","middle",800);
+
+      const localPts=(r.c-minC)/globalSpan*100;
+      svg += text(924,y+5,`${localPts.toFixed(1)} pt`,13,"#4a5157","end",780);
+    });
+
+    const sumAbs=variables.reduce((s,v)=>s+Math.abs(v.beta),0);
+    const etaAt0=intercept-3*sumAbs;
+    const points=rows.reduce((sum,r)=>{
+      const minC=-3*Math.abs(r.beta);
+      return sum+(r.c-minC)/globalSpan*100;
+    },0);
+
+    const totalY=510;
+    svg += text(32,totalY+4,"TOTAL",13,"#59646d","start",820);
+    svg += `<line x1="${x0}" y1="${totalY}" x2="${x0+full}" y2="${totalY}" stroke="rgba(67,72,76,.34)"/>`;
+    for(let i=0;i<=5;i++){
+      const frac=i/5, val=totalNominalMax*frac, x=x0+full*frac;
+      svg += `<line x1="${x}" y1="${totalY-5}" x2="${x}" y2="${totalY+5}" stroke="rgba(67,72,76,.38)"/>`;
+      svg += text(x,totalY+20,val.toFixed(0),11.5,"#59646d","middle",650);
+    }
+    const tx=x0+full*clamp(points/totalNominalMax,0,1);
+    svg += `<circle cx="${tx}" cy="${totalY}" r="10.8" fill="#ffffff" stroke="#b33d3c" stroke-width="3.4" filter="url(#glow)"/><circle cx="${tx}" cy="${totalY}" r="3.6" fill="#9d3433"/>`;
+
+    const pY=570;
+    svg += text(32,pY+4,"PROBABILITY",13,"#59646d","start",820);
+    svg += `<line x1="${x0}" y1="${pY}" x2="${x0+full}" y2="${pY}" stroke="rgba(67,72,76,.34)"/>`;
+
+    const etaMax=etaAt0+totalNominalMax*globalSpan/100;
+    [0.5,1,2,5,10,20,30,40,50,60].forEach(pct=>{
+      const pp=pct/100, logit=Math.log(pp/(1-pp));
+      const f=(logit-etaAt0)/(etaMax-etaAt0);
+      if(f>=0 && f<=1){
+        const x=x0+full*f;
+        svg += `<line x1="${x}" y1="${pY-5}" x2="${x}" y2="${pY+5}" stroke="rgba(67,72,76,.38)"/>`;
+        svg += text(x,pY+20,`${pct}%`,11.5,"#59646d","middle",650);
+      }
+    });
+    const pf=clamp((eta-etaAt0)/(etaMax-etaAt0),0,1);
+    const px=x0+full*pf;
+    svg += `<circle cx="${px}" cy="${pY}" r="10.8" fill="#ffffff" stroke="#b33d3c" stroke-width="3.4" filter="url(#glow)"/><circle cx="${px}" cy="${pY}" r="3.6" fill="#9d3433"/>`;
+
+    $("nomogramSvg").innerHTML=svg;
+    $("nomogramEmpty").style.display="none";
+  }
+
+  function animateNumber(el,from,to,duration,formatter){
+    const start=performance.now();
+    const tick=(now)=>{
+      const t=clamp((now-start)/duration,0,1);
+      const eased=1-Math.pow(1-t,3);
+      el.textContent=formatter(from+(to-from)*eased);
+      if(t<1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  $("submitBtn").addEventListener("click",()=>{
+    const result=readData();
+    if(result && result.error){
+      const v=result.error;
+      $("error").textContent=v.id==="Age" ? `${v.label} must be within ${v.min.toFixed(0)}–${v.max.toFixed(0)}.` : `${v.label} must be within ${v.min.toFixed(2)}–${v.max.toFixed(2)}.`;
+      $("error").classList.add("show");
+      $(v.id).focus();
+      return;
+    }
+    if(!result || !result.rows){
+      $("error").textContent="Please complete all six variables with valid values.";
+      $("error").classList.add("show");
+      return;
+    }
+
+    const rows=result.rows;
+    $("error").classList.remove("show");
+    $("submitBtn").classList.add("calculating");
+    $("submitBtn").textContent="CALCULATING";
+    document.querySelector(".right").classList.add("computing");
+    switchView("step2");
+
+    window.setTimeout(()=>{
+      const eta=intercept+rows.reduce((s,r)=>s+r.c,0);
+      const p=logistic(eta);
+      current={rows,eta,p};
+
+      const oldP=parseFloat($("probability").textContent)||0;
+      const oldEta=parseFloat($("riskScore").textContent.replace("−","-").replace("+",""))||0;
+
+      animateNumber($("probability"),oldP,p*100,520,v=>`${v.toFixed(2)}%`);
+      animateNumber($("riskScore"),oldEta,eta,520,v=>v<0?`−${Math.abs(v).toFixed(3)}`:`+${v.toFixed(3)}`);
+
+      $("probHint").textContent="Model-estimated probability";
+      $("probFill").style.width=`${clamp(p*100,0,100)}%`;
+
+      const marker=clamp((eta+6)/12,0,1)*100;
+      $("scoreMarker").style.left=`${marker}%`;
+      $("scoreMarker").style.opacity="1";
+
+      renderBars(rows);
+      renderNomogram(rows,eta,p);
+
+      document.querySelectorAll(".metric-card").forEach(card=>{
+        card.classList.remove("result-pop");
+        void card.offsetWidth;
+        card.classList.add("result-pop");
+      });
+
+      $("submitBtn").classList.remove("calculating");
+      $("submitBtn").textContent="SUBMIT";
+      document.querySelector(".right").classList.remove("computing");
+    },380);
+  });
+
+  document.querySelectorAll("input").forEach(input=>{
+    input.addEventListener("keydown",e=>{
+      if(e.key==="Enter") $("submitBtn").click();
+    });
+    input.addEventListener("input",()=> $("error").classList.remove("show"));
+  });
+
+
+})();
+</script>
+
+<div class="method-overlay" id="methodOverlay" aria-hidden="true">
+  <div class="method-modal" role="dialog" aria-modal="true" aria-labelledby="methodTitle">
+    <div class="method-head">
+      <div>
+        <div class="micro">Research Methods</div>
+        <h3 id="methodTitle">Model Methodology</h3>
+      </div>
+      <button class="method-close" id="methodClose" type="button" aria-label="Close">×</button>
+    </div>
+
+    <div class="method-body">
+      <section class="method-card">
+        <h4>Model Framework</h4>
+        <p>
+          This calculator implements the final six-variable logistic regression model derived from a
+          cross-national cohort analysis using NHANES and CHARLS data from two countries. The model includes CTI,
+          creatinine, RBC, HbA1c, TC/HDL-C ratio, and age.
+        </p>
+      </section>
+
+      <section class="method-card">
+        <h4>Variable Standardization</h4>
+        <p>
+          Each continuous predictor is standardized using the model-specific centering value and
+          scale parameter shown in the final regression equation. The standardized value is then
+          multiplied by its corresponding regression coefficient.
+        </p>
+      </section>
+
+      <section class="method-card wide">
+        <h4>Logistic Regression Equation</h4>
+        <div class="formula-block">logit(p) = −2.760629
++ 0.127915 × ((CTI − 1.330112) / 0.086820)
++ 0.140389 × ((Cr − 0.948199) / 0.361071)
+− 0.131652 × ((RBC − 4.677461) / 0.497814)
++ 0.176341 × ((HbA1c − 5.849120) / 1.087302)
+− 0.184288 × ((TC_HDL − 4.064712) / 1.369750)
++ 0.619633 × ((Age − 59.834820) / 12.615600)
+
+p = 1 / (1 + exp(−logit(p)))</div>
+      </section>
+
+      <section class="method-card wide">
+        <h4>Web Calculation Logic</h4>
+        <p>
+          The browser performs the calculation locally after the user clicks SUBMIT. No server-side
+          computation is required for the risk estimate.
+        </p>
+        <div class="code-block">const eta =
+  -2.760629
+  + 0.127915 * ((CTI - 1.330112) / 0.086820)
+  + 0.140389 * ((Cr - 0.948199) / 0.361071)
+  - 0.131652 * ((RBC - 4.677461) / 0.497814)
+  + 0.176341 * ((HbA1c - 5.849120) / 1.087302)
+  - 0.184288 * ((TC_HDL - 4.064712) / 1.369750)
+  + 0.619633 * ((Age - 59.834820) / 12.615600);
+
+const probability = 1 / (1 + Math.exp(-eta));</div>
+      </section>
+
+      <section class="method-card">
+        <h4>CTI Definition</h4>
+        <p>
+          CTI represents the Conicity Index for central adiposity.
+        </p>
+        <div class="formula-block">CTI = WC (m) / [0.109 × √(Weight / Height (m))]</div>
+      </section>
+
+      <section class="method-card">
+        <h4>Interpretation</h4>
+        <p>
+          The displayed Risk Score is the model linear predictor on the log-odds scale. Predicted
+          Probability is the corresponding logistic transformation. The nomogram is a visual
+          representation of the same fitted model rather than a separate prediction rule.
+        </p>
+      </section>
+    </div>
+  </div>
+</div>
+
+
+<script>
+(() => {
+  const btn = document.getElementById("methodBtn");
+  const overlay = document.getElementById("methodOverlay");
+  const close = document.getElementById("methodClose");
+  if (!btn || !overlay || !close) return;
+
+  const openModal = () => {
+    overlay.classList.add("open");
+    overlay.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+  };
+  const closeModal = () => {
+    overlay.classList.remove("open");
+    overlay.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+  };
+
+  btn.addEventListener("click", openModal);
+  close.addEventListener("click", closeModal);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeModal();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
+  });
+})();
+</script>
+
+</body>
+</html>
