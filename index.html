@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Glaucoma Risk Calculator</title>
+<title>CHART-C Index | Glaucoma Risk Prediction</title>
 <style>
 :root{
   --bg:#07111f;
@@ -57,7 +57,7 @@ header{
 }
 .logo svg{width:24px;height:24px}
 .brand h1{margin:0;font-size:30px;line-height:1;font-family:"Bodoni 72 Smallcaps","Bodoni 72","Didot","Georgia","Times New Roman",serif;font-weight:900;font-style:italic;letter-spacing:-.035em;text-shadow:0 2px 18px rgba(127,168,255,.10)}
-.brand p{margin:5px 0 0;color:var(--muted);font-size:10px;letter-spacing:.025em}
+.brand p{margin:5px 0 0;color:var(--muted);font-size:9.5px;letter-spacing:.012em;max-width:720px;line-height:1.25}
 .badge{
   border:1px solid var(--line);border-radius:999px;
   padding:8px 12px;background:rgba(255,255,255,.035);
@@ -644,8 +644,8 @@ body.modal-open{overflow:hidden}
         </svg>
       </div>
       <div>
-        <h1>Glaucoma Risk Calculator</h1>
-        <p>A Six-Variable Prediction Model Developed from Cross-National Cohorts</p>
+        <h1>CHART-C Index</h1>
+        <p>Development and Cross-National Validation of the CHART-C Index for Glaucoma Risk Prediction</p>
       </div>
     </div>
     <button class="badge method-btn" id="methodBtn" type="button">RESEARCH MODEL</button>
@@ -725,7 +725,7 @@ body.modal-open{overflow:hidden}
               <div>
                 <div class="metric-label">Risk Score</div>
                 <div class="score-value" id="riskScore">—</div>
-                <div class="await">Linear predictor</div>
+                <div class="await">Linear predictor · log-odds scale</div>
               </div>
               <div class="score-scale"><div class="score-marker" id="scoreMarker" style="opacity:0"></div></div>
             </div>
@@ -754,7 +754,7 @@ body.modal-open{overflow:hidden}
     </section>
   </main>
 
-  <footer>Developed by the Department of Ophthalmology, The First Affiliated Hospital of Nanchang University · Yang et al.</footer>
+  <footer>CHART-C Index · Developed by the Department of Ophthalmology, The First Affiliated Hospital of Nanchang University · Yang et al.</footer>
 </div>
 
 <script>
@@ -996,7 +996,7 @@ body.modal-open{overflow:hidden}
     <div class="method-head">
       <div>
         <div class="micro">Research Methods</div>
-        <h3 id="methodTitle">Model Methodology</h3>
+        <h3 id="methodTitle">CHART-C Index Methodology</h3>
       </div>
       <button class="method-close" id="methodClose" type="button" aria-label="Close">×</button>
     </div>
@@ -1005,9 +1005,8 @@ body.modal-open{overflow:hidden}
       <section class="method-card">
         <h4>Model Framework</h4>
         <p>
-          This calculator implements the final six-variable logistic regression model derived from a
-          cross-national cohort analysis using NHANES and CHARLS data from two countries. The model includes CTI,
-          creatinine, RBC, HbA1c, TC/HDL-C ratio, and age.
+          The CHART-C Index implements the final six-variable logistic regression model derived from a
+          cross-national cohort analysis using NHANES and CHARLS data from two countries. CHART-C represents Conicity index, HbA1c, Age, Red blood cell count, Total cholesterol/HDL-C ratio, and Creatinine.
         </p>
       </section>
 
@@ -1036,7 +1035,7 @@ p = 1 / (1 + exp(−logit(p)))</div>
       <section class="method-card wide">
         <h4>Web Calculation Logic</h4>
         <p>
-          The browser performs the calculation locally after the user clicks SUBMIT. No server-side
+          The browser computes the CHART-C linear predictor and predicted probability locally after the user clicks SUBMIT. No server-side
           computation is required for the risk estimate.
         </p>
         <div class="code-block">const eta =
@@ -1051,6 +1050,19 @@ p = 1 / (1 + exp(−logit(p)))</div>
 const probability = 1 / (1 + Math.exp(-eta));</div>
       </section>
 
+
+      <section class="method-card">
+        <h4>CHART-C Variables</h4>
+        <p>
+          <strong>C</strong> — Conicity index (CTI)<br>
+          <strong>H</strong> — HbA1c<br>
+          <strong>A</strong> — Age<br>
+          <strong>R</strong> — Red blood cell count<br>
+          <strong>T</strong> — Total cholesterol/HDL-C ratio<br>
+          <strong>C</strong> — Creatinine
+        </p>
+      </section>
+
       <section class="method-card">
         <h4>CTI Definition</h4>
         <p>
@@ -1062,9 +1074,10 @@ const probability = 1 / (1 + Math.exp(-eta));</div>
       <section class="method-card">
         <h4>Interpretation</h4>
         <p>
-          The displayed Risk Score is the model linear predictor on the log-odds scale. Predicted
-          Probability is the corresponding logistic transformation. The nomogram is a visual
-          representation of the same fitted model rather than a separate prediction rule.
+          The CHART-C Risk Score is the original model linear predictor (η) on the log-odds scale.
+          Higher values indicate higher modeled glaucoma risk. Predicted Probability is obtained directly
+          from the logistic transformation p = 1 / (1 + exp(−η)). The nomogram is a visual representation
+          of the same fitted model rather than a separate prediction rule.
         </p>
       </section>
     </div>
