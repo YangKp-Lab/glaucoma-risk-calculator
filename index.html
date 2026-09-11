@@ -665,19 +665,19 @@ body.modal-open{overflow:hidden}
           <div class="range"><span>Model range</span><strong>0.97–1.70</strong></div>
         </div>
         <div class="field">
-          <div class="label-row"><label for="Cr">Creatinine</label><span class="unit">mg/dL</span></div>
-          <input id="Cr" type="number" step="any" min="0.4" max="17.8" placeholder="Enter Cr" autocomplete="off" value="1.19">
-          <div class="range"><span>Model range</span><strong>0.40–17.80</strong></div>
-        </div>
-        <div class="field">
-          <div class="label-row"><label for="RBC">RBC</label><span class="unit">×10⁶/µL</span></div>
-          <input id="RBC" type="number" step="any" min="2.56" max="7.02" placeholder="Enter RBC" autocomplete="off" value="5.01">
-          <div class="range"><span>Model range</span><strong>2.56–7.02</strong></div>
-        </div>
-        <div class="field">
           <div class="label-row"><label for="HbA1c">HbA1c</label><span class="unit">%</span></div>
           <input id="HbA1c" type="number" step="any" min="2" max="15.2" placeholder="Enter HbA1c" autocomplete="off" value="6.58">
           <div class="range"><span>Model range</span><strong>2.00–15.20</strong></div>
+        </div>
+        <div class="field">
+          <div class="label-row"><label for="Age">Age</label><span class="unit">years</span></div>
+          <input id="Age" type="number" step="1" min="40" max="85" placeholder="Enter age" autocomplete="off" value="68">
+          <div class="range"><span>Model range</span><strong>40–85</strong></div>
+        </div>
+              <div class="field">
+          <div class="label-row"><label for="RBC">RBC</label><span class="unit">×10⁶/µL</span></div>
+          <input id="RBC" type="number" step="any" min="2.56" max="7.02" placeholder="Enter RBC" autocomplete="off" value="5.01">
+          <div class="range"><span>Model range</span><strong>2.56–7.02</strong></div>
         </div>
         <div class="field">
           <div class="label-row"><label for="TC_HDL">TC / HDL-C</label><span class="unit">ratio</span></div>
@@ -685,11 +685,11 @@ body.modal-open{overflow:hidden}
           <div class="range"><span>Model range</span><strong>1.31–14.85</strong></div>
         </div>
         <div class="field">
-          <div class="label-row"><label for="Age">Age</label><span class="unit">years</span></div>
-          <input id="Age" type="number" step="1" min="40" max="85" placeholder="Enter age" autocomplete="off" value="68">
-          <div class="range"><span>Model range</span><strong>40–85</strong></div>
+          <div class="label-row"><label for="Cr">Creatinine</label><span class="unit">mg/dL</span></div>
+          <input id="Cr" type="number" step="any" min="0.4" max="17.8" placeholder="Enter Cr" autocomplete="off" value="1.19">
+          <div class="range"><span>Model range</span><strong>0.40–17.80</strong></div>
         </div>
-      </div>
+</div>
 
       <div class="input-actions">
         <div id="error" class="error">Please complete all six variables within the model ranges.</div>
@@ -762,11 +762,11 @@ body.modal-open{overflow:hidden}
   const intercept = -2.760629;
   const variables = [
     {id:"CTI",label:"CTI",mean:1.330112,sd:0.086820,beta:0.127915,dec:3,min:0.9736118,max:1.704083},
-    {id:"Cr",label:"Cr",mean:0.948199,sd:0.361071,beta:0.140389,dec:2,min:0.4,max:17.8},
-    {id:"RBC",label:"RBC",mean:4.677461,sd:0.497814,beta:-0.131652,dec:2,min:2.56,max:7.02},
     {id:"HbA1c",label:"HbA1c",mean:5.849120,sd:1.087302,beta:0.176341,dec:1,min:2,max:15.2},
+    {id:"Age",label:"Age",mean:59.834820,sd:12.615600,beta:0.619633,dec:0,min:40,max:85},
+    {id:"RBC",label:"RBC",mean:4.677461,sd:0.497814,beta:-0.131652,dec:2,min:2.56,max:7.02},
     {id:"TC_HDL",label:"TC/HDL",mean:4.064712,sd:1.369750,beta:-0.184288,dec:2,min:1.31383,max:14.85},
-    {id:"Age",label:"Age",mean:59.834820,sd:12.615600,beta:0.619633,dec:0,min:40,max:85}
+    {id:"Cr",label:"Cr",mean:0.948199,sd:0.361071,beta:0.140389,dec:2,min:0.4,max:17.8}
   ];
 
   const maxAbsBeta = Math.max(...variables.map(v=>Math.abs(v.beta)));
@@ -1023,11 +1023,11 @@ body.modal-open{overflow:hidden}
         <h4>Logistic Regression Equation</h4>
         <div class="formula-block">logit(p) = −2.760629
 + 0.127915 × ((CTI − 1.330112) / 0.086820)
-+ 0.140389 × ((Cr − 0.948199) / 0.361071)
-− 0.131652 × ((RBC − 4.677461) / 0.497814)
 + 0.176341 × ((HbA1c − 5.849120) / 1.087302)
-− 0.184288 × ((TC_HDL − 4.064712) / 1.369750)
 + 0.619633 × ((Age − 59.834820) / 12.615600)
+− 0.131652 × ((RBC − 4.677461) / 0.497814)
+− 0.184288 × ((TC_HDL − 4.064712) / 1.369750)
++ 0.140389 × ((Cr − 0.948199) / 0.361071)
 
 p = 1 / (1 + exp(−logit(p)))</div>
       </section>
@@ -1041,11 +1041,11 @@ p = 1 / (1 + exp(−logit(p)))</div>
         <div class="code-block">const eta =
   -2.760629
   + 0.127915 * ((CTI - 1.330112) / 0.086820)
-  + 0.140389 * ((Cr - 0.948199) / 0.361071)
-  - 0.131652 * ((RBC - 4.677461) / 0.497814)
   + 0.176341 * ((HbA1c - 5.849120) / 1.087302)
+  + 0.619633 * ((Age - 59.834820) / 12.615600)
+  - 0.131652 * ((RBC - 4.677461) / 0.497814)
   - 0.184288 * ((TC_HDL - 4.064712) / 1.369750)
-  + 0.619633 * ((Age - 59.834820) / 12.615600);
+  + 0.140389 * ((Cr - 0.948199) / 0.361071);
 
 const probability = 1 / (1 + Math.exp(-eta));</div>
       </section>
