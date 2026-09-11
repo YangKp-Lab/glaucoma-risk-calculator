@@ -261,6 +261,7 @@ input::-webkit-inner-spin-button,input::-webkit-outer-spin-button{appearance:non
   height:6px;border-radius:99px;background:linear-gradient(90deg,rgba(185,152,255,.62),rgba(127,168,255,.66),rgba(116,234,209,.72));
   position:relative;margin-top:16px;
 }
+.score-endpoints{display:flex;justify-content:space-between;margin-top:5px;color:#8b939a;font-size:8px;font-weight:700}
 .score-marker{
   position:absolute;top:50%;left:50%;width:13px;height:13px;border-radius:50%;
   transform:translate(-50%,-50%);background:#fff;border:3px solid #0b1726;box-shadow:0 0 0 2px rgba(116,234,209,.75);
@@ -723,11 +724,12 @@ body.modal-open{overflow:hidden}
 
             <div class="metric-card score-card">
               <div>
-                <div class="metric-label">Risk Score</div>
+                <div class="metric-label">CHART-C Index</div>
                 <div class="score-value" id="riskScore">—</div>
-                <div class="await">Linear predictor · log-odds scale</div>
+                <div class="await">Shifted linear predictor</div>
               </div>
               <div class="score-scale"><div class="score-marker" id="scoreMarker" style="opacity:0"></div></div>
+                <div class="score-endpoints"><span>1.00</span><span>16.19</span></div>
             </div>
 
             <div class="detail-card">
@@ -760,6 +762,7 @@ body.modal-open{overflow:hidden}
 <script>
 (() => {
   const intercept = -2.760629;
+  const chartCShift = 8.168069494438;
   const variables = [
     {id:"CTI",label:"CTI",mean:1.330112,sd:0.086820,beta:0.127915,dec:3,min:0.9736118,max:1.704083},
     {id:"HbA1c",label:"HbA1c",mean:5.849120,sd:1.087302,beta:0.176341,dec:1,min:2,max:15.2},
@@ -950,18 +953,19 @@ body.modal-open{overflow:hidden}
     window.setTimeout(()=>{
       const eta=intercept+rows.reduce((s,r)=>s+r.c,0);
       const p=logistic(eta);
-      current={rows,eta,p};
+      const chartCIndex=eta+chartCShift;
+      current={rows,eta,p,chartCIndex};
 
       const oldP=parseFloat($("probability").textContent)||0;
-      const oldEta=parseFloat($("riskScore").textContent.replace("−","-").replace("+",""))||0;
+      const oldIndex=parseFloat($("riskScore").textContent)||0;
 
       animateNumber($("probability"),oldP,p*100,520,v=>`${v.toFixed(2)}%`);
-      animateNumber($("riskScore"),oldEta,eta,520,v=>v<0?`−${Math.abs(v).toFixed(3)}`:`+${v.toFixed(3)}`);
+      animateNumber($("riskScore"),oldIndex,chartCIndex,520,v=>v.toFixed(2));
 
       $("probHint").textContent="Model-estimated probability";
       $("probFill").style.width=`${clamp(p*100,0,100)}%`;
 
-      const marker=clamp((eta+6)/12,0,1)*100;
+      const marker=clamp((chartCIndex-1)/15.193280905371,0,1)*100;
       $("scoreMarker").style.left=`${marker}%`;
       $("scoreMarker").style.opacity="1";
 
@@ -1005,7 +1009,7 @@ body.modal-open{overflow:hidden}
       <section class="method-card">
         <h4>Model Framework</h4>
         <p>
-          The CHART-C Index implements the final six-variable logistic regression model derived from a
+          The CHART-C prediction model implements the final six-variable logistic regression model derived from a
           cross-national cohort analysis using NHANES and CHARLS data from two countries. CHART-C represents Conicity index, HbA1c, Age, Red blood cell count, Total cholesterol/HDL-C ratio, and Creatinine.
         </p>
       </section>
@@ -1035,7 +1039,7 @@ p = 1 / (1 + exp(−logit(p)))</div>
       <section class="method-card wide">
         <h4>Web Calculation Logic</h4>
         <p>
-          The browser computes the CHART-C linear predictor and predicted probability locally after the user clicks SUBMIT. No server-side
+          The browser computes the original linear predictor, the shifted CHART-C Index, and the predicted probability locally after the user clicks SUBMIT. No server-side
           computation is required for the risk estimate.
         </p>
         <div class="code-block">const eta =
@@ -1047,6 +1051,7 @@ p = 1 / (1 + exp(−logit(p)))</div>
   - 0.184288 * ((TC_HDL - 4.064712) / 1.369750)
   + 0.140389 * ((Cr - 0.948199) / 0.361071);
 
+const chartCIndex = eta + 8.168069494438;
 const probability = 1 / (1 + Math.exp(-eta));</div>
       </section>
 
@@ -1071,13 +1076,39 @@ const probability = 1 / (1 + Math.exp(-eta));</div>
         <div class="formula-block">CTI = WC (m) / [0.109 × √(Weight / Height (m))]</div>
       </section>
 
+
+      <section class="method-card wide">
+        <h4>CHART-C Index Transformation</h4>
+        <p>
+          To provide a positive and clinically intuitive index while preserving the information in the
+          fitted logistic model, the original linear predictor (η) is shifted by a constant. The constant
+          is defined from the minimum attainable η within the prespecified predictor ranges so that the
+          minimum CHART-C Index equals 1.00.
+        </p>
+        <div class="formula-block">CHART-C Index = η + 8.168069
+
+ηmin = -7.168069
+Shift constant = 1 − ηmin = 8.168069
+
+Therefore:
+CHART-C Index = η + 8.168069
+
+Within the prespecified predictor ranges:
+CHART-C Index range ≈ 1.00 to 16.19
+
+Probability recovery:
+p = 1 / {1 + exp[−(CHART-C Index − 8.168069)]}</div>
+      </section>
+
       <section class="method-card">
         <h4>Interpretation</h4>
         <p>
-          The CHART-C Risk Score is the original model linear predictor (η) on the log-odds scale.
-          Higher values indicate higher modeled glaucoma risk. Predicted Probability is obtained directly
-          from the logistic transformation p = 1 / (1 + exp(−η)). The nomogram is a visual representation
-          of the same fitted model rather than a separate prediction rule.
+          The CHART-C Index is a constant-shift transformation of the original logistic regression
+          linear predictor. Higher CHART-C Index values indicate higher modeled glaucoma risk. Because the
+          transformation adds the same constant (8.168069) to every individual, patient ranking and model
+          discrimination are unchanged. Predicted probability is calculated from the original linear predictor
+          and is therefore unaffected by the index transformation. The nomogram represents the same fitted
+          model rather than a separate prediction rule.
         </p>
       </section>
     </div>
