@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CHART-C Index | Glaucoma Risk Prediction</title>
+<title>MLG-5 Index | Glaucoma Risk Prediction</title>
 <style>
 :root{
   --bg:#07111f;
@@ -632,6 +632,22 @@ body.modal-open{overflow:hidden}
 }
 </style>
 
+
+<style id="ua-formula-marker">
+.ua-star, .ua-formula-star {
+  color: #477da9;
+  font-weight: 900;
+}
+.ua-star {
+  font-size: .78em;
+  vertical-align: super;
+  line-height: 0;
+  margin-left: 2px;
+}
+.ua-formula-star {
+  margin-left: 4px;
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -640,13 +656,13 @@ body.modal-open{overflow:hidden}
       <div class="logo" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none">
           <path d="M2.4 12s3.4-5.5 9.6-5.5 9.6 5.5 9.6 5.5-3.4 5.5-9.6 5.5S2.4 12 2.4 12Z" stroke="#b33d3c" stroke-width="1.5"/>
-          <circle cx="12" cy="12" r="3.2" stroke="#9bbcff" stroke-width="1.5"/>
-          <circle cx="12" cy="12" r="1.05" fill="#f7fbff"/>
+          <circle cx="12" cy="12" r="3.2" stroke="#648faa" stroke-width="1.5"/>
+          <circle cx="12" cy="12" r="1.05" fill="#303234"/>
         </svg>
       </div>
       <div>
-        <h1>CHART-C Index</h1>
-        <p>Development and Cross-National Validation of the CHART-C Index for Glaucoma Risk Prediction</p>
+        <h1>MLG-5 Index</h1>
+        <p>Machine-learning glaucoma risk index derived using elastic-net feature selection and Gaussian Naive Bayes prediction</p>
       </div>
     </div>
     <button class="badge method-btn" id="methodBtn" type="button">RESEARCH MODEL</button>
@@ -662,40 +678,35 @@ body.modal-open{overflow:hidden}
       <div class="inputs">
         <div class="field">
           <div class="label-row"><label for="CTI" title="Conicity Index = WC (m) / [0.109 × √(Weight / Height (m))]">CTI<sup class="cti-star">*</sup></label><span class="unit">Conicity Index</span></div>
-          <input id="CTI" type="number" step="any" min="0.9736118" max="1.704083" placeholder="Enter CTI" autocomplete="off" value="1.39">
-          <div class="range"><span>Model range</span><strong>0.97–1.70</strong></div>
+          <input id="CTI" type="number" step="any" placeholder="Enter CTI" autocomplete="off" value="1.39">
+          <div class="range"><span>Continuous predictor</span><strong>CTI</strong></div>
         </div>
         <div class="field">
-          <div class="label-row"><label for="HbA1c">HbA1c</label><span class="unit">%</span></div>
-          <input id="HbA1c" type="number" step="any" min="2" max="15.2" placeholder="Enter HbA1c" autocomplete="off" value="6.58">
-          <div class="range"><span>Model range</span><strong>2.00–15.20</strong></div>
-        </div>
-        <div class="field">
-          <div class="label-row"><label for="Age">Age</label><span class="unit">years</span></div>
-          <input id="Age" type="number" step="1" min="40" max="85" placeholder="Enter age" autocomplete="off" value="68">
-          <div class="range"><span>Model range</span><strong>40–85</strong></div>
-        </div>
-              <div class="field">
-          <div class="label-row"><label for="RBC">RBC</label><span class="unit">×10⁶/µL</span></div>
-          <input id="RBC" type="number" step="any" min="2.56" max="7.02" placeholder="Enter RBC" autocomplete="off" value="5.01">
-          <div class="range"><span>Model range</span><strong>2.56–7.02</strong></div>
-        </div>
-        <div class="field">
-          <div class="label-row"><label for="TC_HDL">TC / HDL-C</label><span class="unit">ratio</span></div>
-          <input id="TC_HDL" type="number" step="any" min="1.31383" max="14.85" placeholder="Enter ratio" autocomplete="off" value="4.99">
-          <div class="range"><span>Model range</span><strong>1.31–14.85</strong></div>
+          <div class="label-row"><label for="UA_eGFR">UA/eGFR<sup class="ua-star">*</sup></label><span class="unit">ratio</span></div>
+          <input id="UA_eGFR" type="number" step="any" placeholder="Enter UA/eGFR" autocomplete="off" value="0.08">
+          <div class="range"><span>Continuous predictor</span><strong>UA/eGFR</strong></div>
         </div>
         <div class="field">
           <div class="label-row"><label for="Cr">Creatinine</label><span class="unit">mg/dL</span></div>
-          <input id="Cr" type="number" step="any" min="0.4" max="17.8" placeholder="Enter Cr" autocomplete="off" value="1.19">
-          <div class="range"><span>Model range</span><strong>0.40–17.80</strong></div>
+          <input id="Cr" type="number" step="any" placeholder="Enter Cr" autocomplete="off" value="1.00">
+          <div class="range"><span>Continuous predictor</span><strong>Cr</strong></div>
         </div>
-</div>
+        <div class="field">
+          <div class="label-row"><label for="RBC">RBC</label><span class="unit">×10⁶/µL</span></div>
+          <input id="RBC" type="number" step="any" placeholder="Enter RBC" autocomplete="off" value="4.60">
+          <div class="range"><span>Continuous predictor</span><strong>RBC</strong></div>
+        </div>
+        <div class="field">
+          <div class="label-row"><label for="Age">Age</label><span class="unit">years</span></div>
+          <input id="Age" type="number" step="any" placeholder="Enter age" autocomplete="off" value="68">
+          <div class="range"><span>Continuous predictor</span><strong>Age</strong></div>
+        </div>
+      </div>
 
       <div class="input-actions">
-        <div id="error" class="error">Please complete all six variables within the model ranges.</div>
-        <button class="submit" id="submitBtn" type="button">SUBMIT</button>
-        <div class="preset-note"><span class="formula-star">*</span> CTI = WC (m) / [0.109 × √(Weight / Height (m))]</div>
+        <div id="error" class="error">Please complete all five predictors with valid numeric values.</div>
+        <button class="submit" id="submitBtn" type="button">CALCULATE MLG-5 INDEX</button>
+        <div class="preset-note"><span class="formula-star">*</span> CTI = WC (m) / [0.109 × √(Weight / Height (m))]<br><span class="ua-formula-star">*</span> UA/eGFR = UA / eGFR; eGFR (2021 CKD-EPI creatinine) = 142 × min(Scr/κ, 1)<sup>α</sup> × max(Scr/κ, 1)<sup>−1.200</sup> × 0.9938<sup>Age</sup> × 1.012 [if female], where Scr is serum creatinine (mg/dL), κ = 0.7 (female) or 0.9 (male), and α = −0.241 (female) or −0.302 (male).</div>
       </div>
     </section>
 
@@ -707,7 +718,7 @@ body.modal-open{overflow:hidden}
         </div>
         <div class="tabs" role="tablist" aria-label="Result views">
           <button class="tab active" id="tab2" type="button" data-view="step2">STEP 2 · RESULTS</button>
-          <button class="tab" id="tab3" type="button" data-view="step3">STEP 3 · NOMOGRAM</button>
+          <button class="tab" id="tab3" type="button" data-view="step3">STEP 3 · COMPUTATIONAL NOMOGRAM</button>
         </div>
       </div>
 
@@ -715,30 +726,30 @@ body.modal-open{overflow:hidden}
         <div class="results-view">
           <div class="result-grid">
             <div class="metric-card prob-card">
-              <div class="calc-flow"><span>Standardize</span><i></i><span>β-weight</span><i></i><span>Logistic</span></div>
+              <div class="calc-flow"><span>5 predictors</span><i></i><span>Gaussian NB</span><i></i><span>Posterior risk</span></div>
               <div class="metric-label">Predicted Probability</div>
               <div class="big-value" id="probability">—</div>
-              <div class="await" id="probHint">Complete Step 1 and submit.</div>
+              <div class="await" id="probHint">Complete Step 1 and calculate.</div>
               <div class="prob-track"><div class="prob-fill" id="probFill"></div></div>
             </div>
 
             <div class="metric-card score-card">
               <div>
-                <div class="metric-label">CHART-C Index</div>
+                <div class="metric-label">MLG-5 Index</div>
                 <div class="score-value" id="riskScore">—</div>
-                <div class="await">Shifted linear predictor</div>
+                <div class="await">0–10 probability-scaled index</div>
               </div>
               <div class="score-scale"><div class="score-marker" id="scoreMarker" style="opacity:0"></div></div>
-                <div class="score-endpoints"><span>1.00</span><span>16.19</span></div>
+              <div class="score-endpoints"><span>0</span><span>10</span></div>
             </div>
 
             <div class="detail-card">
               <div class="detail-head">
-                <strong>Variable Contributions</strong>
-                <span>log-odds contribution</span>
+                <strong>Variable Contributions to L</strong>
+                <span>quadratic + linear contribution</span>
               </div>
               <div class="bars" id="bars">
-                <div class="await">Results will appear after submission.</div>
+                <div class="await">Results will appear after calculation.</div>
               </div>
             </div>
           </div>
@@ -749,44 +760,175 @@ body.modal-open{overflow:hidden}
         <div class="nomogram-view">
           <div class="nomogram-box">
             <svg id="nomogramSvg" viewBox="0 0 960 610" preserveAspectRatio="xMidYMid meet"></svg>
-            <div id="nomogramEmpty" class="empty"><div><strong>Nomogram not generated</strong>Submit all variables in Step 1.</div></div>
+            <div id="nomogramEmpty" class="empty">
+              <div>
+                <strong>Computational nomogram not generated</strong>
+                Calculate the MLG-5 Index in Step 1 first.
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <footer>CHART-C Index · Developed by the Department of Ophthalmology, The First Affiliated Hospital of Nanchang University · Yang et al.</footer>
+  <footer>MLG-5 Index · Machine-learning glaucoma risk prediction research model</footer>
+</div>
+
+<div class="method-overlay" id="methodOverlay" aria-hidden="true">
+  <div class="method-modal" role="dialog" aria-modal="true" aria-labelledby="methodTitle">
+    <div class="method-head">
+      <div>
+        <div class="micro">Research Methods</div>
+        <h3 id="methodTitle">MLG-5 Index Methodology</h3>
+      </div>
+      <button class="method-close" id="methodClose" type="button" aria-label="Close">×</button>
+    </div>
+
+    <div class="method-body">
+      <section class="method-card">
+        <h4>Model Framework</h4>
+        <p>The final MLG-5 model uses an Enet_a01 + NaiveBayes pipeline. Elastic net with α = 0.1 is used for feature selection, and Gaussian Naive Bayes is the final prediction algorithm. The five selected predictors are CTI, UA/eGFR, creatinine, red blood cell count, and age.</p>
+      </section>
+
+      <section class="method-card">
+        <h4>Predictor Set</h4>
+        <p><strong>CTI</strong> — Conicity Index<br><strong>UA/eGFR</strong> — uric acid-to-estimated glomerular filtration rate ratio<br><strong>Cr</strong> — creatinine<br><strong>RBC</strong> — red blood cell count<br><strong>Age</strong> — age in years</p>
+      </section>
+
+      <section class="method-card wide">
+        <h4>Gaussian Naive Bayes Model</h4>
+        <p>For each continuous predictor, Gaussian Naive Bayes models the class-conditional distribution using a normal density. The final posterior glaucoma probability is obtained by combining the class prior with the five class-conditional densities under the Naive Bayes conditional-independence assumption.</p>
+        <div class="formula-block">P(Y = 1 | x) = 1 / [1 + exp(−L)]
+
+L = log(π₁/π₀) + Σⱼ { log(σ₀ⱼ/σ₁ⱼ)
+    − (xⱼ − μ₁ⱼ)²/(2σ₁ⱼ²)
+    + (xⱼ − μ₀ⱼ)²/(2σ₀ⱼ²) }</div>
+      </section>
+
+      <section class="method-card wide">
+        <h4>Expanded MLG-5 Equation</h4>
+        <div class="formula-block">L = −12.52702605885674
+− 2.452121056873750 × CTI²
++ 10.369294125125265 × CTI
++ 117.4004018796317 × (UA/eGFR)²
+− 12.824097899878439 × (UA/eGFR)
++ 3.351059812101331 × Cr²
+− 5.909869278500278 × Cr
++ 0.04158265380739734 × RBC²
+− 0.9274332882414846 × RBC
+− 0.0004537166011694817 × Age²
++ 0.1205213006941625 × Age
+
+Predicted probability = 1 / [1 + exp(−L)]</div>
+        <div class="method-note">This expanded equation was numerically verified against the fitted Naive Bayes model to machine precision in the model-development workflow.</div>
+      </section>
+
+      <section class="method-card wide">
+        <h4>MLG-5 Index Transformation</h4>
+        <p>The model posterior probability is linearly rescaled to a 0–10 index. This transformation preserves patient ordering and ROC discrimination because it is a strictly increasing transformation of the predicted probability.</p>
+        <div class="formula-block">MLG-5 Index = 10 × P(Y = 1 | x)
+
+Therefore:
+
+MLG-5 Index = 10 / [1 + exp(−L)]
+
+Index scale: 0 to 10
+Higher values indicate higher model-estimated glaucoma risk.</div>
+      </section>
+
+      <section class="method-card">
+        <h4>Training Priors</h4>
+        <p>The fitted Naive Bayes model used 320 glaucoma-positive and 3,827 glaucoma-negative observations in the training data. These class frequencies are incorporated into the fitted class prior.</p>
+      </section>
+
+      <section class="method-card">
+        <h4>CTI Definition</h4>
+        <p>CTI represents the Conicity Index for central adiposity.</p>
+        <div class="formula-block">CTI = WC (m) / [0.109 × √(Weight / Height (m))]</div>
+      </section>
+
+      <section class="method-card wide">
+        <h4>UA/eGFR and eGFR Calculation</h4>
+        <p>eGFR is calculated using the 2021 CKD-EPI creatinine equation without a race coefficient. Serum creatinine (Scr) is expressed in mg/dL, age in years, and eGFR in mL/min/1.73 m².</p>
+        <div class="formula-block">eGFR = 142 × min(Scr/κ, 1)^α × max(Scr/κ, 1)^−1.200 × 0.9938^Age × 1.012 [if female]
+
+κ = 0.7 for females and 0.9 for males
+α = −0.241 for females and −0.302 for males
+
+min(Scr/κ, 1) = the smaller of Scr/κ and 1
+max(Scr/κ, 1) = the larger of Scr/κ and 1
+
+UA/eGFR = UA / eGFR</div>
+        <div class="method-note">eGFR equation: 2021 CKD-EPI creatinine equation (race-free). The UA/eGFR predictor is subsequently calculated by dividing UA by the resulting eGFR value.</div>
+      </section>
+
+      <section class="method-card wide">
+        <h4>Web Calculation Logic</h4>
+        <p>The browser evaluates the expanded Gaussian Naive Bayes log-posterior odds equation using the five entered predictors, converts L to the posterior glaucoma probability, and then multiplies that probability by 10 to obtain the MLG-5 Index. Calculation occurs locally in the browser.</p>
+        <div class="code-block">const L =
+  -12.52702605885674
+  - 2.452121056873750 * CTI ** 2
+  + 10.369294125125265 * CTI
+  + 117.4004018796317 * UA_eGFR ** 2
+  - 12.824097899878439 * UA_eGFR
+  + 3.351059812101331 * Cr ** 2
+  - 5.909869278500278 * Cr
+  + 0.04158265380739734 * RBC ** 2
+  - 0.9274332882414846 * RBC
+  - 0.0004537166011694817 * Age ** 2
+  + 0.1205213006941625 * Age;
+
+const probability = 1 / (1 + Math.exp(-L));
+const mlGlauIndex = 10 * probability;</div>
+      </section>
+
+      <section class="method-card wide">
+        <h4>Computational Nomogram</h4>
+        <p>Step 3 visualizes the exact Gaussian Naive Bayes calculation rather than a conventional logistic-regression nomogram. For each predictor, the displayed contribution is Cj = ajXj² + bjXj. The five contributions are added to the model intercept to obtain L. The lower axes then map L to the posterior glaucoma probability and to the MLG-5 Index on its 0–10 scale. The visualization does not define a separate prediction model.</p>
+        <div class="formula-block">L = −12.527026 + CCTI + CUA/eGFR + CCr + CRBC + CAge
+
+Probability = 1 / [1 + exp(−L)]
+
+MLG-5 Index = 10 × Probability</div>
+      </section>
+
+      <section class="method-card wide">
+        <h4>Interpretation</h4>
+        <p>The MLG-5 Index is a probability-scaled output of the fitted Gaussian Naive Bayes model rather than a separate regression score. A value of 5 corresponds to a model-estimated probability of 0.50, a value of 1 corresponds to 0.10, and a value of 8 corresponds to 0.80. Any operating threshold selected on the probability scale can be expressed on the index scale by multiplying the probability threshold by 10.</p>
+      </section>
+    </div>
+  </div>
 </div>
 
 <script>
 (() => {
-  const intercept = -2.760629;
-  const chartCShift = 8.168069494438;
-  const variables = [
-    {id:"CTI",label:"CTI",mean:1.330112,sd:0.086820,beta:0.127915,dec:3,min:0.9736118,max:1.704083},
-    {id:"HbA1c",label:"HbA1c",mean:5.849120,sd:1.087302,beta:0.176341,dec:1,min:2,max:15.2},
-    {id:"Age",label:"Age",mean:59.834820,sd:12.615600,beta:0.619633,dec:0,min:40,max:85},
-    {id:"RBC",label:"RBC",mean:4.677461,sd:0.497814,beta:-0.131652,dec:2,min:2.56,max:7.02},
-    {id:"TC_HDL",label:"TC/HDL",mean:4.064712,sd:1.369750,beta:-0.184288,dec:2,min:1.31383,max:14.85},
-    {id:"Cr",label:"Cr",mean:0.948199,sd:0.361071,beta:0.140389,dec:2,min:0.4,max:17.8}
-  ];
+  const coefficients = {
+    intercept: -12.52702605885674,
+    CTI: {q: -2.452121056873750, l: 10.369294125125265},
+    UA_eGFR: {q: 117.4004018796317, l: -12.824097899878439},
+    Cr: {q: 3.351059812101331, l: -5.909869278500278},
+    RBC: {q: 0.04158265380739734, l: -0.9274332882414846},
+    Age: {q: -0.0004537166011694817, l: 0.1205213006941625}
+  };
 
-  const maxAbsBeta = Math.max(...variables.map(v=>Math.abs(v.beta)));
-  const globalSpan = 6 * maxAbsBeta; // points across z -3 to +3 for strongest variable
-  const totalNominalMax = variables.reduce((s,v)=>s+(6*Math.abs(v.beta)/globalSpan*100),0);
+  const variables = [
+    {id:"CTI", label:"CTI", dec:3},
+    {id:"UA_eGFR", label:"UA/eGFR", dec:4},
+    {id:"Cr", label:"Cr", dec:2},
+    {id:"RBC", label:"RBC", dec:2},
+    {id:"Age", label:"Age", dec:0}
+  ];
 
   const $ = id => document.getElementById(id);
   const clamp = (x,a,b) => Math.min(b,Math.max(a,x));
-  const logistic = x => x>=0 ? 1/(1+Math.exp(-x)) : Math.exp(x)/(1+Math.exp(x));
+  const logistic = x => x >= 0 ? 1/(1+Math.exp(-x)) : Math.exp(x)/(1+Math.exp(x));
   const signed = (x,d=3) => `${x>=0?"+":"−"}${Math.abs(x).toFixed(d)}`;
-
-  let current = null;
 
   function switchView(name){
     document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.view===name));
     document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===name));
-    $("viewTitle").textContent = name==="step2" ? "Risk Estimate" : "Nomogram";
+    $("viewTitle").textContent = name==="step2" ? "Risk Estimate" : "Computational Nomogram";
   }
 
   document.querySelectorAll(".tab").forEach(btn=>{
@@ -797,124 +939,128 @@ body.modal-open{overflow:hidden}
     const rows = [];
     for(const v of variables){
       const raw = $(v.id).value.trim();
-      const value = v.id==="Age" ? Math.round(Number(raw)) : Number(raw);
-      if(raw==="" || !Number.isFinite(value) || value<v.min || value>v.max) return {error:v};
-      const z = (value-v.mean)/v.sd;
-      const c = v.beta*z;
-      rows.push({...v,value,z,c});
+      const value = Number(raw);
+      if(raw==="" || !Number.isFinite(value)) return {error:v};
+      const c = coefficients[v.id];
+      const contribution = c.q * value * value + c.l * value;
+      rows.push({...v,value,contribution});
     }
     return {rows};
   }
 
   function renderBars(rows){
-    const scale = Math.max(.15,...rows.map(r=>Math.abs(r.c)));
+    const scale = Math.max(.15,...rows.map(r=>Math.abs(r.contribution)));
     $("bars").innerHTML = rows.map(r=>{
-      const w = Math.min(48,Math.abs(r.c)/scale*46);
+      const w = Math.min(48,Math.abs(r.contribution)/scale*46);
       return `<div class="bar-row">
         <div class="bar-name">${r.label}</div>
         <div class="bar-track">
-          <div class="bar-pos" style="width:${r.c>=0?w:0}%"></div>
-          <div class="bar-neg" style="width:${r.c<0?w:0}%"></div>
+          <div class="bar-pos" style="width:${r.contribution>=0?w:0}%"></div>
+          <div class="bar-neg" style="width:${r.contribution<0?w:0}%"></div>
         </div>
-        <div class="bar-value">${signed(r.c,3)}</div>
+        <div class="bar-value">${signed(r.contribution,3)}</div>
       </div>`;
     }).join("");
   }
 
-  function text(x,y,str,size=10,fill="#8fa3bd",anchor="start",weight=500){
+  function svgText(x,y,str,size=10,fill="#68727a",anchor="start",weight=500){
     return `<text x="${x}" y="${y}" fill="${fill}" font-size="${size}" text-anchor="${anchor}" font-weight="${weight}" font-family="Inter,ui-sans-serif,system-ui">${str}</text>`;
   }
 
-  function renderNomogram(rows,eta,p){
-    const x0=196, full=650, top=62, start=127, gap=61;
-    let svg = `
+  function renderNomogram(rows,L,p,indexValue){
+    const svg = $("nomogramSvg");
+    const empty = $("nomogramEmpty");
+    const x0 = 205;
+    const full = 650;
+    const startY = 72;
+    const gap = 73;
+
+    let out = `
       <defs>
-        <linearGradient id="grad" x1="0" x2="1">
+        <linearGradient id="mlGlauGrad" x1="0" x2="1">
           <stop offset="0%" stop-color="#648faa"/>
           <stop offset="50%" stop-color="#c7c8c6"/>
           <stop offset="100%" stop-color="#b33d3c"/>
         </linearGradient>
-        <filter id="glow"><feGaussianBlur stdDeviation="2.7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="mlGlauGlow">
+          <feGaussianBlur stdDeviation="2.2" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
       </defs>
-      ${text(32,31,"POINTS",13,"#59646d","start",820)}
-      <line x1="${x0}" y1="${top}" x2="${x0+full}" y2="${top}" stroke="rgba(67,72,76,.34)" />
+      ${svgText(32,31,"VARIABLE CONTRIBUTION TO L",13,"#59646d","start",820)}
+      ${svgText(925,31,"CURRENT",10,"#879099","end",750)}
     `;
 
-    for(let i=0;i<=10;i++){
-      const x=x0+full*i/10;
-      svg += `<line x1="${x}" y1="${top-5}" x2="${x}" y2="${top+5}" stroke="rgba(67,72,76,.38)"/>`;
-      svg += text(x,top-13,String(i*10),11.5,"#59646d","middle",650);
-    }
-
     rows.forEach((r,i)=>{
-      const y=start+i*gap;
-      const axisW=full*Math.abs(r.beta)/maxAbsBeta;
-      const minC=-3*Math.abs(r.beta), maxC=3*Math.abs(r.beta);
-      const riskT=(r.c-minC)/(maxC-minC);
-      const clamped=clamp(riskT,0,1);
-      const mx=x0+axisW*clamped;
+      const y = startY + i*gap;
+      const current = r.contribution;
+      const span = Math.max(1, Math.abs(current)*1.35);
+      const minC = -span;
+      const maxC = span;
+      const pos = clamp((current-minC)/(maxC-minC),0,1);
+      const mx = x0 + full*pos;
 
-      svg += text(32,y-2,r.label,16,"#2f3336","start",800);
-      svg += text(32,y+17,r.value.toFixed(r.dec),12,"#59646d","start",650);
-      svg += `<line x1="${x0}" y1="${y}" x2="${x0+axisW}" y2="${y}" stroke="url(#grad)" stroke-width="3.4" stroke-linecap="round" opacity=".86"/>`;
+      out += svgText(32,y-5,r.label,16,"#2f3336","start",800);
+      out += svgText(32,y+15,`x = ${r.value.toFixed(r.dec)}`,11.5,"#68727a","start",650);
+      out += `<line x1="${x0}" y1="${y}" x2="${x0+full}" y2="${y}" stroke="url(#mlGlauGrad)" stroke-width="3.2" stroke-linecap="round" opacity=".84"/>`;
 
-      for(let k=0;k<=6;k++){
-        const riskZ=-3+k;
-        const rawZ=r.beta>=0?riskZ:-riskZ;
-        const raw=r.mean+rawZ*r.sd;
-        const x=x0+axisW*k/6;
-        svg += `<line x1="${x}" y1="${y-5}" x2="${x}" y2="${y+5}" stroke="rgba(67,72,76,.36)"/>`;
-        if(k%2===0) svg += text(x,y+20,raw.toFixed(r.dec),11.5,"#59646d","middle",650);
-      }
-
-      svg += `<circle cx="${mx}" cy="${y}" r="10.8" fill="#ffffff" stroke="#b33d3c" stroke-width="3.4" filter="url(#glow)"/>`;
-      svg += `<circle cx="${mx}" cy="${y}" r="3.6" fill="#9d3433"/>`;
-      const badgeX = clamp(mx, x0+34, x0+axisW-34);
-      svg += `<rect x="${badgeX-34}" y="${y-38}" width="68" height="23" rx="8" fill="rgba(166,60,60,.94)" stroke="rgba(166,60,60,.30)"/>`;
-      svg += text(badgeX,y-21,r.value.toFixed(r.dec),11,"#ffffff","middle",800);
-
-      const localPts=(r.c-minC)/globalSpan*100;
-      svg += text(924,y+5,`${localPts.toFixed(1)} pt`,13,"#4a5157","end",780);
-    });
-
-    const sumAbs=variables.reduce((s,v)=>s+Math.abs(v.beta),0);
-    const etaAt0=intercept-3*sumAbs;
-    const points=rows.reduce((sum,r)=>{
-      const minC=-3*Math.abs(r.beta);
-      return sum+(r.c-minC)/globalSpan*100;
-    },0);
-
-    const totalY=510;
-    svg += text(32,totalY+4,"TOTAL",13,"#59646d","start",820);
-    svg += `<line x1="${x0}" y1="${totalY}" x2="${x0+full}" y2="${totalY}" stroke="rgba(67,72,76,.34)"/>`;
-    for(let i=0;i<=5;i++){
-      const frac=i/5, val=totalNominalMax*frac, x=x0+full*frac;
-      svg += `<line x1="${x}" y1="${totalY-5}" x2="${x}" y2="${totalY+5}" stroke="rgba(67,72,76,.38)"/>`;
-      svg += text(x,totalY+20,val.toFixed(0),11.5,"#59646d","middle",650);
-    }
-    const tx=x0+full*clamp(points/totalNominalMax,0,1);
-    svg += `<circle cx="${tx}" cy="${totalY}" r="10.8" fill="#ffffff" stroke="#b33d3c" stroke-width="3.4" filter="url(#glow)"/><circle cx="${tx}" cy="${totalY}" r="3.6" fill="#9d3433"/>`;
-
-    const pY=570;
-    svg += text(32,pY+4,"PROBABILITY",13,"#59646d","start",820);
-    svg += `<line x1="${x0}" y1="${pY}" x2="${x0+full}" y2="${pY}" stroke="rgba(67,72,76,.34)"/>`;
-
-    const etaMax=etaAt0+totalNominalMax*globalSpan/100;
-    [0.5,1,2,5,10,20,30,40,50,60].forEach(pct=>{
-      const pp=pct/100, logit=Math.log(pp/(1-pp));
-      const f=(logit-etaAt0)/(etaMax-etaAt0);
-      if(f>=0 && f<=1){
+      for(let k=0;k<=4;k++){
+        const f=k/4;
+        const v=minC+(maxC-minC)*f;
         const x=x0+full*f;
-        svg += `<line x1="${x}" y1="${pY-5}" x2="${x}" y2="${pY+5}" stroke="rgba(67,72,76,.38)"/>`;
-        svg += text(x,pY+20,`${pct}%`,11.5,"#59646d","middle",650);
+        out += `<line x1="${x}" y1="${y-5}" x2="${x}" y2="${y+5}" stroke="rgba(67,72,76,.34)"/>`;
+        out += svgText(x,y+21,v.toFixed(2),10.5,"#68727a","middle",600);
       }
-    });
-    const pf=clamp((eta-etaAt0)/(etaMax-etaAt0),0,1);
-    const px=x0+full*pf;
-    svg += `<circle cx="${px}" cy="${pY}" r="10.8" fill="#ffffff" stroke="#b33d3c" stroke-width="3.4" filter="url(#glow)"/><circle cx="${px}" cy="${pY}" r="3.6" fill="#9d3433"/>`;
 
-    $("nomogramSvg").innerHTML=svg;
-    $("nomogramEmpty").style.display="none";
+      out += `<circle cx="${mx}" cy="${y}" r="10.5" fill="#fff" stroke="#b33d3c" stroke-width="3.2" filter="url(#mlGlauGlow)"/>`;
+      out += `<circle cx="${mx}" cy="${y}" r="3.4" fill="#9d3433"/>`;
+      out += svgText(925,y+4,signed(current,3),12.5,"#4a5157","end",800);
+    });
+
+    const lY = 455;
+    const lMin = Math.min(-8, L-2);
+    const lMax = Math.max(8, L+2);
+    const lPos = clamp((L-lMin)/(lMax-lMin),0,1);
+    const lx = x0 + full*lPos;
+
+    out += svgText(32,lY+4,"TOTAL L",13,"#59646d","start",820);
+    out += `<line x1="${x0}" y1="${lY}" x2="${x0+full}" y2="${lY}" stroke="url(#mlGlauGrad)" stroke-width="3.2" stroke-linecap="round"/>`;
+    for(let k=0;k<=4;k++){
+      const f=k/4;
+      const v=lMin+(lMax-lMin)*f;
+      const x=x0+full*f;
+      out += `<line x1="${x}" y1="${lY-5}" x2="${x}" y2="${lY+5}" stroke="rgba(67,72,76,.34)"/>`;
+      out += svgText(x,lY+21,v.toFixed(2),10.5,"#68727a","middle",600);
+    }
+    out += `<circle cx="${lx}" cy="${lY}" r="10.5" fill="#fff" stroke="#b33d3c" stroke-width="3.2" filter="url(#mlGlauGlow)"/>`;
+    out += svgText(925,lY+4,L.toFixed(3),"#4a5157","end",800);
+
+    const pY = 520;
+    out += svgText(32,pY+4,"PROBABILITY",13,"#59646d","start",820);
+    out += `<line x1="${x0}" y1="${pY}" x2="${x0+full}" y2="${pY}" stroke="url(#mlGlauGrad)" stroke-width="3.2" stroke-linecap="round"/>`;
+    [0,25,50,75,100].forEach(pct=>{
+      const x=x0+full*pct/100;
+      out += `<line x1="${x}" y1="${pY-5}" x2="${x}" y2="${pY+5}" stroke="rgba(67,72,76,.34)"/>`;
+      out += svgText(x,pY+21,`${pct}%`,10.5,"#68727a","middle",600);
+    });
+    const px=x0+full*p;
+    out += `<circle cx="${px}" cy="${pY}" r="10.5" fill="#fff" stroke="#b33d3c" stroke-width="3.2" filter="url(#mlGlauGlow)"/>`;
+    out += svgText(925,pY+4,`${(p*100).toFixed(2)}%`,12.5,"#4a5157","end",800);
+
+    const iY = 585;
+    out += svgText(32,iY+4,"MLG-5 INDEX",13,"#59646d","start",820);
+    out += `<line x1="${x0}" y1="${iY}" x2="${x0+full}" y2="${iY}" stroke="url(#mlGlauGrad)" stroke-width="3.2" stroke-linecap="round"/>`;
+    [0,2,4,6,8,10].forEach(v=>{
+      const x=x0+full*v/10;
+      out += `<line x1="${x}" y1="${iY-5}" x2="${x}" y2="${iY+5}" stroke="rgba(67,72,76,.34)"/>`;
+      out += svgText(x,iY-12,String(v),10.5,"#68727a","middle",600);
+    });
+    const ix=x0+full*indexValue/10;
+    out += `<circle cx="${ix}" cy="${iY}" r="10.5" fill="#fff" stroke="#b33d3c" stroke-width="3.2" filter="url(#mlGlauGlow)"/>`;
+    out += svgText(925,iY+4,indexValue.toFixed(2),12.5,"#4a5157","end",800);
+
+    svg.innerHTML=out;
+    empty.style.display="none";
   }
 
   function animateNumber(el,from,to,duration,formatter){
@@ -931,15 +1077,9 @@ body.modal-open{overflow:hidden}
   $("submitBtn").addEventListener("click",()=>{
     const result=readData();
     if(result && result.error){
-      const v=result.error;
-      $("error").textContent=v.id==="Age" ? `${v.label} must be within ${v.min.toFixed(0)}–${v.max.toFixed(0)}.` : `${v.label} must be within ${v.min.toFixed(2)}–${v.max.toFixed(2)}.`;
+      $("error").textContent=`Please enter a valid numeric value for ${result.error.label}.`;
       $("error").classList.add("show");
-      $(v.id).focus();
-      return;
-    }
-    if(!result || !result.rows){
-      $("error").textContent="Please complete all six variables with valid values.";
-      $("error").classList.add("show");
+      $(result.error.id).focus();
       return;
     }
 
@@ -951,26 +1091,23 @@ body.modal-open{overflow:hidden}
     switchView("step2");
 
     window.setTimeout(()=>{
-      const eta=intercept+rows.reduce((s,r)=>s+r.c,0);
-      const p=logistic(eta);
-      const chartCIndex=eta+chartCShift;
-      current={rows,eta,p,chartCIndex};
+      const L = coefficients.intercept + rows.reduce((s,r)=>s+r.contribution,0);
+      const p = logistic(L);
+      const mlGlauIndex = 10*p;
 
       const oldP=parseFloat($("probability").textContent)||0;
       const oldIndex=parseFloat($("riskScore").textContent)||0;
 
       animateNumber($("probability"),oldP,p*100,520,v=>`${v.toFixed(2)}%`);
-      animateNumber($("riskScore"),oldIndex,chartCIndex,520,v=>v.toFixed(2));
+      animateNumber($("riskScore"),oldIndex,mlGlauIndex,520,v=>v.toFixed(2));
 
-      $("probHint").textContent="Model-estimated probability";
+      $("probHint").textContent="Gaussian Naive Bayes posterior probability";
       $("probFill").style.width=`${clamp(p*100,0,100)}%`;
-
-      const marker=clamp((chartCIndex-1)/15.193280905371,0,1)*100;
-      $("scoreMarker").style.left=`${marker}%`;
+      $("scoreMarker").style.left=`${clamp(mlGlauIndex/10*100,0,100)}%`;
       $("scoreMarker").style.opacity="1";
 
       renderBars(rows);
-      renderNomogram(rows,eta,p);
+      renderNomogram(rows,L,p,mlGlauIndex);
 
       document.querySelectorAll(".metric-card").forEach(card=>{
         card.classList.remove("result-pop");
@@ -979,9 +1116,9 @@ body.modal-open{overflow:hidden}
       });
 
       $("submitBtn").classList.remove("calculating");
-      $("submitBtn").textContent="SUBMIT";
+      $("submitBtn").textContent="CALCULATE MLG-5 INDEX";
       document.querySelector(".right").classList.remove("computing");
-    },380);
+    },300);
   });
 
   document.querySelectorAll("input").forEach(input=>{
@@ -991,159 +1128,22 @@ body.modal-open{overflow:hidden}
     input.addEventListener("input",()=> $("error").classList.remove("show"));
   });
 
-
-})();
-</script>
-
-<div class="method-overlay" id="methodOverlay" aria-hidden="true">
-  <div class="method-modal" role="dialog" aria-modal="true" aria-labelledby="methodTitle">
-    <div class="method-head">
-      <div>
-        <div class="micro">Research Methods</div>
-        <h3 id="methodTitle">CHART-C Index Methodology</h3>
-      </div>
-      <button class="method-close" id="methodClose" type="button" aria-label="Close">×</button>
-    </div>
-
-    <div class="method-body">
-      <section class="method-card">
-        <h4>Model Framework</h4>
-        <p>
-          The CHART-C prediction model implements the final six-variable logistic regression model derived from a
-          cross-national cohort analysis using NHANES and CHARLS data from two countries. CHART-C represents Conicity index, HbA1c, Age, Red blood cell count, Total cholesterol/HDL-C ratio, and Creatinine.
-        </p>
-      </section>
-
-      <section class="method-card">
-        <h4>Variable Standardization</h4>
-        <p>
-          Each continuous predictor is standardized using the model-specific centering value and
-          scale parameter shown in the final regression equation. The standardized value is then
-          multiplied by its corresponding regression coefficient.
-        </p>
-      </section>
-
-      <section class="method-card wide">
-        <h4>Logistic Regression Equation</h4>
-        <div class="formula-block">logit(p) = −2.760629
-+ 0.127915 × ((CTI − 1.330112) / 0.086820)
-+ 0.176341 × ((HbA1c − 5.849120) / 1.087302)
-+ 0.619633 × ((Age − 59.834820) / 12.615600)
-− 0.131652 × ((RBC − 4.677461) / 0.497814)
-− 0.184288 × ((TC_HDL − 4.064712) / 1.369750)
-+ 0.140389 × ((Cr − 0.948199) / 0.361071)
-
-p = 1 / (1 + exp(−logit(p)))</div>
-      </section>
-
-      <section class="method-card wide">
-        <h4>Web Calculation Logic</h4>
-        <p>
-          The browser computes the original linear predictor, the shifted CHART-C Index, and the predicted probability locally after the user clicks SUBMIT. No server-side
-          computation is required for the risk estimate.
-        </p>
-        <div class="code-block">const eta =
-  -2.760629
-  + 0.127915 * ((CTI - 1.330112) / 0.086820)
-  + 0.176341 * ((HbA1c - 5.849120) / 1.087302)
-  + 0.619633 * ((Age - 59.834820) / 12.615600)
-  - 0.131652 * ((RBC - 4.677461) / 0.497814)
-  - 0.184288 * ((TC_HDL - 4.064712) / 1.369750)
-  + 0.140389 * ((Cr - 0.948199) / 0.361071);
-
-const chartCIndex = eta + 8.168069494438;
-const probability = 1 / (1 + Math.exp(-eta));</div>
-      </section>
-
-
-      <section class="method-card">
-        <h4>CHART-C Variables</h4>
-        <p>
-          <strong>C</strong> — Conicity index (CTI)<br>
-          <strong>H</strong> — HbA1c<br>
-          <strong>A</strong> — Age<br>
-          <strong>R</strong> — Red blood cell count<br>
-          <strong>T</strong> — Total cholesterol/HDL-C ratio<br>
-          <strong>C</strong> — Creatinine
-        </p>
-      </section>
-
-      <section class="method-card">
-        <h4>CTI Definition</h4>
-        <p>
-          CTI represents the Conicity Index for central adiposity.
-        </p>
-        <div class="formula-block">CTI = WC (m) / [0.109 × √(Weight / Height (m))]</div>
-      </section>
-
-
-      <section class="method-card wide">
-        <h4>CHART-C Index Transformation</h4>
-        <p>
-          To provide a positive and clinically intuitive index while preserving the information in the
-          fitted logistic model, the original linear predictor (η) is shifted by a constant. The constant
-          is defined from the minimum attainable η within the prespecified predictor ranges so that the
-          minimum CHART-C Index equals 1.00.
-        </p>
-        <div class="formula-block">CHART-C Index = η + 8.168069
-
-ηmin = -7.168069
-Shift constant = 1 − ηmin = 8.168069
-
-Therefore:
-CHART-C Index = η + 8.168069
-
-Within the prespecified predictor ranges:
-CHART-C Index range ≈ 1.00 to 16.19
-
-Probability recovery:
-p = 1 / {1 + exp[−(CHART-C Index − 8.168069)]}</div>
-      </section>
-
-      <section class="method-card">
-        <h4>Interpretation</h4>
-        <p>
-          The CHART-C Index is a constant-shift transformation of the original logistic regression
-          linear predictor. Higher CHART-C Index values indicate higher modeled glaucoma risk. Because the
-          transformation adds the same constant (8.168069) to every individual, patient ranking and model
-          discrimination are unchanged. Predicted probability is calculated from the original linear predictor
-          and is therefore unaffected by the index transformation. The nomogram represents the same fitted
-          model rather than a separate prediction rule.
-        </p>
-      </section>
-    </div>
-  </div>
-</div>
-
-
-<script>
-(() => {
-  const btn = document.getElementById("methodBtn");
-  const overlay = document.getElementById("methodOverlay");
-  const close = document.getElementById("methodClose");
-  if (!btn || !overlay || !close) return;
-
-  const openModal = () => {
+  const overlay=$("methodOverlay");
+  $("methodBtn").addEventListener("click",()=>{
     overlay.classList.add("open");
-    overlay.setAttribute("aria-hidden", "false");
+    overlay.setAttribute("aria-hidden","false");
     document.body.classList.add("modal-open");
-  };
-  const closeModal = () => {
-    overlay.classList.remove("open");
-    overlay.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("modal-open");
-  };
+  });
+  $("methodClose").addEventListener("click",closeMethod);
+  overlay.addEventListener("click",e=>{if(e.target===overlay) closeMethod();});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape") closeMethod();});
 
-  btn.addEventListener("click", openModal);
-  close.addEventListener("click", closeModal);
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeModal();
-  });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
-  });
+  function closeMethod(){
+    overlay.classList.remove("open");
+    overlay.setAttribute("aria-hidden","true");
+    document.body.classList.remove("modal-open");
+  }
 })();
 </script>
-
 </body>
 </html>
