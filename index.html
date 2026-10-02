@@ -1249,6 +1249,34 @@ svg {
 @media(max-width:600px) {
   }
 
+
+/* v11 taller batch-results area */
+#tab-batch.active {
+  display:flex;
+  flex-direction:column;
+  flex:1 1 auto;
+  min-height:0;
+}
+#tab-batch .preview-wrap {
+  flex:1 1 auto;
+  min-height:260px;
+  max-height:none;
+  overflow:auto;
+}
+#tab-batch .preview-table {
+  width:100%;
+}
+@media(min-width:901px) {
+  #tab-batch.active {
+    min-height:0;
+  }
+  #tab-batch .preview-wrap {
+    min-height:300px;
+    max-height:none;
+    margin-top:8px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1795,7 +1823,7 @@ function runBatch() {
 }
 
 function renderBatchPreview() {
-  const wrap=document.getElementById("previewWrap"),table=document.getElementById("previewTable"),rows=batchState.results.slice(0,8);
+  const wrap=document.getElementById("previewWrap"),table=document.getElementById("previewTable"),rows=batchState.results.slice(0,16);
   const cols=["Age","UA/eGFR","CTI","SBP","eGDR","MLG-5 prevalence index","Prevalent glaucoma probability","MLG-5 incidence index","Incident glaucoma risk","Error"];
   table.innerHTML=`<thead><tr>${cols.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td>${typeof r[c]==="number"?r[c].toFixed(c.includes("Probability")||c.includes("Risk")?4:3):(r[c]??"")}</td>`).join("")}</tr>`).join("")}</tbody>`;wrap.style.display="block";
 }
