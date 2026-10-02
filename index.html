@@ -1241,84 +1241,26 @@ svg {
 }
 
 /* v8 visitor statistics */
-.hero-tools {
-  position:relative;
-  z-index:2;
-  display:flex;
-  align-items:center;
-  gap:14px;
-  flex:none;
-}
-.visit-stats {
-  min-width:96px;
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-  color:rgba(255,255,255,.82);
-  font-size:9px;
-  line-height:1.2;
-  text-align:right;
-}
-.visit-stats > div {
-  display:flex;
-  align-items:baseline;
-  justify-content:flex-end;
-  gap:7px;
-  white-space:nowrap;
-}
-.visit-stats span {
-  color:rgba(255,255,255,.68);
-  font-weight:650;
-}
-.visit-stats strong {
-  min-width:24px;
-  color:#FFFFFF;
-  font-size:10px;
-  font-weight:850;
-  font-variant-numeric:tabular-nums;
-}
 .developer-credit {
   display:block;
 }
 @media(min-width:901px) {
-  .hero-tools {
-    gap:12px;
   }
-  .visit-stats {
-    min-width:92px;
-    font-size:8.2px;
-  }
-  .visit-stats strong {
-    font-size:9.4px;
-  }
-}
 @media(max-width:600px) {
-  .hero-tools {
-    width:100%;
-    justify-content:flex-end;
   }
-}
 
 </style>
-<script data-goatcounter="https://yangkplab.goatcounter.com/count"
-        async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
 <div class="shell">
   <section class="hero">
     <div class="hero-row">
       <div>
-        <div class="kicker">Glaucoma risk model</div>
+        <div class="kicker">Glaucoma risk calculator</div>
         <h1 class="index-title">MLG-5 Index</h1>
         <p>Five-variable LightGBM risk estimation with individual SHAP decomposition, raw-variable derivation, and browser-based batch analysis.</p>
       </div>
-      <div class="hero-tools">
-        <div class="visit-stats" aria-label="Visitor statistics">
-          <div><span>Total visits</span><strong id="totalVisits">—</strong></div>
-          <div><span>Today</span><strong id="todayVisits">—</strong></div>
-        </div>
-        <button class="detail-btn" id="detailBtn">Detail</button>
-      </div>
+      <button class="detail-btn" id="detailBtn">Detail</button>
     </div>
   </section>
 
@@ -1551,7 +1493,6 @@ svg {
 
 
 <script>
-const GOATCOUNTER_CODE = "yangkplab";
 const FEATURES = ["Age","UA_eGFR","CTI","SBP","eGDR"];
 const DISPLAY_ORDER = ["Age","eGDR","CTI","SBP","UA_eGFR"];
 const MEDIANS = {"Age":58,"UA_eGFR":0.05,"CTI":1.30,"SBP":126,"eGDR":8.44};
@@ -1883,45 +1824,6 @@ document.getElementById("closeDetail").addEventListener("click",()=>document.get
 document.getElementById("detailModal").addEventListener("click",e=>{if(e.target.id==="detailModal")e.currentTarget.classList.remove("open");});
 
 
-function isoLocalDate(d=new Date()) {
-  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
-  return `${y}-${m}-${day}`;
-}
-
-async function fetchGoatCounterValue(url) {
-  const response=await fetch(url,{cache:"no-store"});
-  if(!response.ok) throw new Error(`Visitor counter request failed: ${response.status}`);
-  const data=await response.json();
-  return data.count ?? "—";
-}
-
-async function updateVisitorStats() {
-  const totalEl=document.getElementById("totalVisits"),todayEl=document.getElementById("todayVisits");
-  if(!GOATCOUNTER_CODE) {
-    totalEl.textContent="—";
-    todayEl.textContent="—";
-    return;
-  }
-  const base=`https://${GOATCOUNTER_CODE}.goatcounter.com`;
-  const today=isoLocalDate();
-  try {
-    const [total,todayCount]=await Promise.all([
-      fetchGoatCounterValue(`${base}/counter/TOTAL.json`),
-      fetchGoatCounterValue(`${base}/counter/TOTAL.json?start=${today}&end=${today}`)
-    ]);
-    totalEl.textContent=total;
-    todayEl.textContent=todayCount;
-  } catch(error) {
-    console.warn("Visitor statistics unavailable.",error);
-    totalEl.textContent="—";
-    todayEl.textContent="—";
-  }
-}
-
-function initVisitorTracking() {
-  setTimeout(updateVisitorStats,700);
-}
-
 function runSelfTests() {
   let ok=true;
   for(const key of ["nhanes","charls"]) {
@@ -1935,7 +1837,6 @@ function runSelfTests() {
 runSelfTests();
 calculateFive();
 calculateRaw(false);
-initVisitorTracking();
 </script>
 
 </body>
